@@ -1,0 +1,19 @@
+﻿@page "/Davidtestpage"
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+
+
+<h1></h1>
+
+<h3>testpage</h3>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var category = await uow.CategoryRepo.GetAllAsync();
+        // var subcategory = await uow.SubcategoryRepo.GetAllAsync();
+
+    }
+
+}
