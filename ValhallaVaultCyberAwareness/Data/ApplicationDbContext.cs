@@ -6,6 +6,12 @@ namespace ValhallaVaultCyberAwareness.Data
 {
 	public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 	{
+		public DbSet<AnswerModel> Answers { get; set; }
+		public DbSet<CategoryModel> Categories { get; set; }
+		public DbSet<QuestionModel> Questions { get; set; }
+		public DbSet<ResponseModel> Responses { get; set; }
+		public DbSet<SegmentModel> Segments { get; set; }
+		public DbSet<SubCategoryModel> SubCategories { get; set; }
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
