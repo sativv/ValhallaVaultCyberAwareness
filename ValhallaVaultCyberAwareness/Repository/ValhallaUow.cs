@@ -9,6 +9,11 @@ namespace ValhallaVaultCyberAwareness.Repository
         public ValhallaUow(ApplicationDbContext context)
         {
             this.context = context;
+            CategoryRepo = new(context);
+            AnswerRepo = new(context);
+            QuestionRepo = new(context);
+            SubcategoryRepo = new(context);
+            segmentRepo = new(context);
         }
 
         public AnswerRepo AnswerRepo { get; set; }
