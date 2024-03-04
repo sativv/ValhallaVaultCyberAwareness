@@ -1,5 +1,50 @@
-﻿<h3>Overview</h3>
+﻿@page "/home"
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+@inject NavigationManager navManager
+
+
+@* visa alla kategorier med nav till varje kategori
+se hur många delar man klarat av i varje kategori i %
+sökruta för att söka på en kategori *@
+@if (categories == null)
+{
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <h1>Loading...</h1>
+    </div>
+}
+else
+{
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            @foreach (var category in categories)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-dark text-light text-center">
+                        <a href="/Segment/@category.Id" style="text-decoration: none; color: inherit;">
+                            <h1 class="p-3">@category.Name</h1>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+
 
 @code {
+    List<CategoryModel> categories = new();
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await uow.CategoryRepo.GetAllAsync();
+    }
+    private void navToSegmentPage(int id)
+    {
+        navManager.NavigateTo($"/Category/{id}");
+    }
 }

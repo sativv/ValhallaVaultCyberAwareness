@@ -1,5 +1,51 @@
-﻿<h3>Segment</h3>
+﻿@page "/Segment/{Id:int}"
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+
+@if (ChosenCategory == null)
+{
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <h1 class="text-white">Loading...</h1>
+    </div>
+}
+else
+{
+    <div class="container text-white" >
+        <h1 class="text-center">@ChosenCategory.Name</h1>
+
+        @foreach (var segment in Segments)
+        {
+            <div class="card mb-4 text-light bg-dark">
+                <div class="card-body">
+                    <h2>@segment.Name</h2>
+                    <p class="mb-2">Some Information About This Segment:</p>
+                    <h3>@segment.InfoText</h3>
+                    <p class="mb-2">The Subcategories in this segment are:</p>
+                    @foreach (var category in Subcategories)
+                    {
+                        <a href="/Subcategory/@category.Id">
+                            <h3 class="mb-1">@category.Name</h3>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
+    public CategoryModel ChosenCategory { get; set; }
+    public List<SegmentModel> Segments { get; set; }
+    public List<SubCategoryModel> Subcategories { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        ChosenCategory = await uow.CategoryRepo.GetByIdAsync(Id);
+        Segments = await uow.segmentRepo.GetSegmentsInCategoryAsync(Id);
+        Subcategories = await uow.SubcategoryRepo.GetSubcategoriesInSegment(Id);
+    }
 }
