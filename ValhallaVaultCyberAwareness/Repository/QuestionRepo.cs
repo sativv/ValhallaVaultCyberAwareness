@@ -33,6 +33,10 @@ namespace ValhallaVaultCyberAwareness.Repository
             }
 
         }
+        public async Task<List<QuestionModel>> GetQuestionsInSubcategoryAsnyc(int subcategoryId)
+        {
+            return await context.Questions.Where(q => q.SubCategoryId == subcategoryId).ToListAsync();
+        }
 
         public async Task<CategoryModel> AddAsync(CategoryModel categoryToAdd)
         {
