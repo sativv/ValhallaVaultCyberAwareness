@@ -13,22 +13,22 @@ namespace ValhallaVaultCyberAwareness.Repository
             this.context = context;
         }
 
-        public async Task<List<CategoryModel>> GetAllAsync()
+        public async Task<List<QuestionModel>> GetAllAsync()
         {
-            return await context.Categories.ToListAsync();
+            return await context.Questions.ToListAsync();
         }
 
-        public async Task<CategoryModel?> GetByIdAsync(int id)
+        public async Task<QuestionModel?> GetByIdAsync(int id)
         {
-            return await context.Categories.FirstOrDefaultAsync(a => a.Id == id);
+            return await context.Questions.FirstOrDefaultAsync(q => q.Id == id);
         }
 
         public async Task RemoveByIdAsync(int id)
         {
-            CategoryModel modelToRemove = await context.Categories.FirstOrDefaultAsync(a => a.Id == id);
+            QuestionModel modelToRemove = await context.Questions.FirstOrDefaultAsync(q => q.Id == id);
             if (modelToRemove != null)
             {
-                context.Categories.Remove(modelToRemove);
+                context.Questions.Remove(modelToRemove);
                 await SaveChangesAsync();
             }
 
@@ -38,11 +38,27 @@ namespace ValhallaVaultCyberAwareness.Repository
             return await context.Questions.Where(q => q.SubCategoryId == subcategoryId).ToListAsync();
         }
 
-        public async Task<CategoryModel> AddAsync(CategoryModel categoryToAdd)
+        public async Task<QuestionModel> AddAsync(QuestionModel questionToAdd)
         {
-            await context.Categories.AddAsync(categoryToAdd);
+            await context.Questions.AddAsync(questionToAdd);
             await SaveChangesAsync();
-            return categoryToAdd;
+            return questionToAdd;
+        }
+
+        private async Task UpdateAsync(int id, QuestionModel newQuestion)
+        {
+            QuestionModel questionToUpdate = await context.Questions.FirstOrDefaultAsync(c => c.Id == id);
+            if (questionToUpdate != null)
+            {
+                questionToUpdate.Text = newQuestion.Text;
+                questionToUpdate.Answers = newQuestion.Answers;
+                questionToUpdate.SubCategory = newQuestion.SubCategory;
+                questionToUpdate.SubCategoryId = newQuestion.SubCategoryId;
+
+
+            }
+            await SaveChangesAsync();
+
         }
 
         public async Task SaveChangesAsync()
