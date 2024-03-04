@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ValhallaVaultCyberAwareness.Data;
+using ValhallaVaultCyberAwareness.Models;
+using ValhallaVaultCyberAwareness.Repository;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -6,13 +9,16 @@ namespace ValhallaVaultCyberAwareness.Api
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class ResponsesController : ControllerBase
+	public class ResponsesController(ApplicationDbContext context) : ControllerBase
 	{
+		private readonly ValhallaUow uow = new(context);
+
 		// GET: api/<ResponsesController>
 		[HttpGet]
-		public IEnumerable<string> Get()
+		public async Task<ActionResult<List<ResponseModel>>> Get()
 		{
-			return new string[] { "value1", "value2" };
+			throw new NotImplementedException();
+			//return Ok(await uow.ResponseRepo.GetAllAsync());
 		}
 
 		// GET api/<ResponsesController>/5

@@ -4,46 +4,46 @@ using ValhallaVaultCyberAwareness.Models;
 
 namespace ValhallaVaultCyberAwareness.Repository
 {
-    public class QuestionRepo
-    {
-        private readonly ApplicationDbContext context;
+	public class QuestionRepo
+	{
+		private readonly ApplicationDbContext context;
 
-        public QuestionRepo(ApplicationDbContext context)
-        {
-            this.context = context;
-        }
+		public QuestionRepo(ApplicationDbContext context)
+		{
+			this.context = context;
+		}
 
-        public async Task<List<CategoryModel>> GetAllAsync()
-        {
-            return await context.Categories.ToListAsync();
-        }
+		public async Task<List<QuestionModel>> GetAllAsync()
+		{
+			return await context.Questions.ToListAsync();
+		}
 
-        public async Task<CategoryModel?> GetByIdAsync(int id)
-        {
-            return await context.Categories.FirstOrDefaultAsync(a => a.Id == id);
-        }
+		public async Task<QuestionModel?> GetByIdAsync(int id)
+		{
+			return await context.Questions.FirstOrDefaultAsync(a => a.Id == id);
+		}
 
-        public async Task RemoveByIdAsync(int id)
-        {
-            CategoryModel modelToRemove = await context.Categories.FirstOrDefaultAsync(a => a.Id == id);
-            if (modelToRemove != null)
-            {
-                context.Categories.Remove(modelToRemove);
-                await SaveChangesAsync();
-            }
+		public async Task RemoveByIdAsync(int id)
+		{
+			QuestionModel modelToRemove = await context.Questions.FirstOrDefaultAsync(a => a.Id == id);
+			if (modelToRemove != null)
+			{
+				context.Questions.Remove(modelToRemove);
+				await SaveChangesAsync();
+			}
 
-        }
+		}
 
-        public async Task<CategoryModel> AddAsync(CategoryModel categoryToAdd)
-        {
-            await context.Categories.AddAsync(categoryToAdd);
-            await SaveChangesAsync();
-            return categoryToAdd;
-        }
+		public async Task<QuestionModel> AddAsync(QuestionModel questionToAdd)
+		{
+			await context.Questions.AddAsync(questionToAdd);
+			await SaveChangesAsync();
+			return questionToAdd;
+		}
 
-        public async Task SaveChangesAsync()
-        {
-            await context.SaveChangesAsync();
-        }
-    }
+		public async Task SaveChangesAsync()
+		{
+			await context.SaveChangesAsync();
+		}
+	}
 }
