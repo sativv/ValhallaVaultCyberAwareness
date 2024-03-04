@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValhallaVaultCyberAwareness.Data;
 
@@ -11,9 +12,11 @@ using ValhallaVaultCyberAwareness.Data;
 namespace ValhallaVaultCyberAwareness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240304101641_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,29 +246,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("AnswerModel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsCorrectAnswer = false,
-                            QuestionId = 1,
-                            Text = "Första svaret"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsCorrectAnswer = false,
-                            QuestionId = 1,
-                            Text = "Andra svaret"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsCorrectAnswer = true,
-                            QuestionId = 1,
-                            Text = "Tredje svaret"
-                        });
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.CategoryModel", b =>
@@ -283,13 +263,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CategoryModel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Första kategorin"
-                        });
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.QuestionModel", b =>
@@ -312,14 +285,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.HasIndex("SubCategoryId");
 
                     b.ToTable("QuestionModel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            SubCategoryId = 1,
-                            Text = "Vilket svar nedan är rätt?"
-                        });
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.ResponseModel", b =>
@@ -363,15 +328,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("SegmentModel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            InfoText = "Här är lite infotext om detta segmentet",
-                            Name = "Första segmentet"
-                        });
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.SubCategoryModel", b =>
@@ -394,14 +350,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.HasIndex("SegmentId");
 
                     b.ToTable("SubCategoryModel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Första subkategorin",
-                            SegmentId = 1
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
