@@ -1,5 +1,24 @@
-﻿<h3>Subcategory</h3>
+﻿@page "/Subcategory/{Id:int}"
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+<h3>Subcategory</h3>
+@if (chosenSubcategory == null)
+{
+    <h1 class="text-white">Loading...</h1>
+} else
+{
+    <h1 class="text-white">@chosenSubcategory.Name</h1>
+}
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
+    public SubCategoryModel chosenSubcategory { get; set; }
+    
 
+    protected override async Task OnInitializedAsync()
+    {
+        chosenSubcategory = await uow.SubcategoryRepo.GetByIdAsync(Id);
+    }
 }

@@ -54,7 +54,7 @@ namespace ValhallaVaultCyberAwareness.Repository
                 segmentToUpdate.InfoText = newSegment.InfoText;
                 segmentToUpdate.Category = newSegment.Category;
                 segmentToUpdate.CategoryId = newSegment.CategoryId;
-                segmentToUpdate.Name = newSegment.Name
+                segmentToUpdate.Name = newSegment.Name;
 
 
             }
