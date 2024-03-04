@@ -27,6 +27,7 @@
                     <label for="email" class="form-label">Username</label>
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
+                
                 <div class="form-floating mb-3">
                     <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
                     <label for="password" class="form-label">Password</label>
@@ -55,13 +56,7 @@
             </EditForm>
         </section>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
+    
 </div>
 
 @code {

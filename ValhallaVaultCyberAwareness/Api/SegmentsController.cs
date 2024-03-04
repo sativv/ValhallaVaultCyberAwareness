@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ValhallaVaultCyberAwareness.Data;
+using ValhallaVaultCyberAwareness.Models;
+using ValhallaVaultCyberAwareness.Repository;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -6,26 +9,37 @@ namespace ValhallaVaultCyberAwareness.Api
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class SegmentsController : ControllerBase
+	public class SegmentsController(ApplicationDbContext context) : ControllerBase
 	{
+		private readonly ValhallaUow uow = new(context);
+
 		// GET: api/<SegmentsController>
 		[HttpGet]
-		public IEnumerable<string> Get()
+		public async Task<ActionResult<List<SegmentModel>>> Get()
 		{
-			return new string[] { "value1", "value2" };
+			return Ok(await uow.segmentRepo.GetAllAsync());
 		}
 
 		// GET api/<SegmentsController>/5
 		[HttpGet("{id}")]
-		public string Get(int id)
+		public async Task<ActionResult<SegmentModel>> Get(int id)
 		{
-			return "value";
+			return Ok(await uow.segmentRepo.GetByIdAsync(id));
 		}
 
 		// POST api/<SegmentsController>
 		[HttpPost]
-		public void Post([FromBody] string value)
+		public async Task<ActionResult> Post([FromBody] SegmentModel segment)
 		{
+			try
+			{
+				await uow.segmentRepo.AddAsync(segment);
+				return Ok();
+			}
+			catch
+			{
+				return BadRequest();
+			}
 		}
 
 		// PUT api/<SegmentsController>/5
@@ -36,8 +50,17 @@ namespace ValhallaVaultCyberAwareness.Api
 
 		// DELETE api/<SegmentsController>/5
 		[HttpDelete("{id}")]
-		public void Delete(int id)
+		public async Task<ActionResult> Delete(int id)
 		{
+			try
+			{
+				await uow.segmentRepo.RemoveByIdAsync(id);
+				return Ok();
+			}
+			catch
+			{
+				return BadRequest();
+			}
 		}
 	}
 }

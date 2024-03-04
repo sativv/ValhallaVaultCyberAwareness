@@ -8,7 +8,7 @@ namespace ValhallaVaultCyberAwareness.Models
 		public int Id { get; set; }
 		public string Text { get; set; } = null!;
 		public int SubCategoryId { get; set; }
-		public SubCategoryModel SubCategory { get; set; }
+		public SubCategoryModel? SubCategory { get; set; }
 		public List<AnswerModel> Answers { get; set; } = new();
 		public List<ResponseModel> Responses { get; } = new();
 
