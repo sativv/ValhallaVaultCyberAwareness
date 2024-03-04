@@ -40,6 +40,10 @@ namespace ValhallaVaultCyberAwareness.Repository
             await SaveChangesAsync();
             return segmentToAdd;
         }
+        public async Task<List<SegmentModel>> GetSegmentsInCategoryAsync(int categoryId)
+        {
+            return await context.Segments.Where(s => s.CategoryId == categoryId).ToListAsync();
+        }
 
         public async Task SaveChangesAsync()
         {

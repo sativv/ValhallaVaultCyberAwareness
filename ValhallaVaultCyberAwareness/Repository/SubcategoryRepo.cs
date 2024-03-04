@@ -40,6 +40,11 @@ namespace ValhallaVaultCyberAwareness.Repository
             await SaveChangesAsync();
             return subCategoryModel;
         }
+        public async Task<List<SubCategoryModel>> GetSubcategoriesInSegment(int segmentid)
+        {
+            return await context.SubCategories.Where(s => s.SegmentId == segmentid).ToListAsync();
+        }
+
 
         public async Task SaveChangesAsync()
         {

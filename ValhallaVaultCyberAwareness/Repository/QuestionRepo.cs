@@ -46,4 +46,5 @@ namespace ValhallaVaultCyberAwareness.Repository
 			await context.SaveChangesAsync();
 		}
 	}
+
 }
