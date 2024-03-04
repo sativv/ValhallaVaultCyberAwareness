@@ -40,6 +40,19 @@ namespace ValhallaVaultCyberAwareness.Repository
 
         }
 
+        private async Task UpdateAsync(int id, AnswerModel newAnswer)
+        {
+            AnswerModel answerToUpdate = await context.Answers.FirstOrDefaultAsync(a => a.Id == id);
+            if (answerToUpdate != null)
+            {
+                answerToUpdate.Text = newAnswer.Text;
+                answerToUpdate.Question = newAnswer.Question;
+                answerToUpdate.IsCorrectAnswer = newAnswer.IsCorrectAnswer;
+            }
+            await SaveChangesAsync();
+
+        }
+
         public async Task<AnswerModel> AddAsync(AnswerModel answerToAdd)
         {
             await context.Answers.AddAsync(answerToAdd);

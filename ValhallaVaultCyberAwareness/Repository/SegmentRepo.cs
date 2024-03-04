@@ -45,6 +45,23 @@ namespace ValhallaVaultCyberAwareness.Repository
             return await context.Segments.Where(s => s.CategoryId == categoryId).ToListAsync();
         }
 
+        private async Task UpdateAsync(int id, SegmentModel newSegment)
+        {
+            SegmentModel segmentToUpdate = await context.Segments.FirstOrDefaultAsync(s => s.Id == id);
+            if (segmentToUpdate != null)
+            {
+                segmentToUpdate.SubCategories = newSegment.SubCategories;
+                segmentToUpdate.InfoText = newSegment.InfoText;
+                segmentToUpdate.Category = newSegment.Category;
+                segmentToUpdate.CategoryId = newSegment.CategoryId;
+                segmentToUpdate.Name = newSegment.Name
+
+
+            }
+            await SaveChangesAsync();
+
+        }
+
         public async Task SaveChangesAsync()
         {
             await context.SaveChangesAsync();
