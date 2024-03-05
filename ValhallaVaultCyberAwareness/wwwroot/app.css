@@ -18,6 +18,9 @@ html, body {
         background-color: #21e8ef;
     }
 
+    ::placeholder{
+        color:white;
+    }
 
 a, .btn-link {
     color: #006bb7;

@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
+@rendermode InteractiveServer
 @inject ValhallaUow uow
 @inject NavigationManager navManager
 @attribute [Authorize]
@@ -18,20 +19,44 @@ sökruta för att söka på en kategori *@
 }
 else
 {
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            @foreach (var category in categories)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card bg-dark text-light text-center">
-                        <a href="/Segment/@category.Id" style="text-decoration: none; color: inherit;">
-                            <h1 class="p-3">@category.Name</h1>
-                        </a>
-                    </div>
+    <input type="text" placeholder="Search" @oninput="FilterCategories" />
+    if (isFiltered && categories.Any())
+    {      
+        <div class="container mt-5  d-flex justify-content-center ">
+            <div class="row ">
+                <div class="col-md-10 mb-4">
+                    @foreach (var category in filteredCategories)
+                    {
+                        <div class="mb-4">
+                            <div class="card bg-dark text-light text-center">
+                                <a href="/Segment/@category.Id" style="text-decoration: none; color: inherit;">
+                                    <h1 class="p-3">@category.Name</h1>
+                                </a>
+                            </div>
+                        </div>
+                    }
                 </div>
-            }
+            </div>
         </div>
-    </div>
+    } else
+    {
+        <div class="container mt-5  d-flex justify-content-center ">
+            <div class="row ">
+                <div class="col-md-10 mb-4">
+                    @foreach (var category in categories)
+                    {
+                        <div class="mb-4">
+                            <div class="card bg-dark text-light text-center">
+                                <a href="/Segment/@category.Id" style="text-decoration: none; color: inherit;">
+                                    <h1 class="p-3">@category.Name</h1>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 }
 
 
@@ -39,6 +64,12 @@ else
 
 @code {
     List<CategoryModel> categories = new();
+    List<CategoryModel> filteredCategories = new();
+
+    [Parameter]
+    public string filterString { get; set; }
+
+    bool isFiltered;
 
 
     protected override async Task OnInitializedAsync()
@@ -48,5 +79,16 @@ else
     private void navToSegmentPage(int id)
     {
         navManager.NavigateTo($"/Category/{id}");
+    }
+
+    private void FilterCategories(ChangeEventArgs e)
+    {
+        if (string.IsNullOrEmpty(e.Value.ToString()))
+        {
+            isFiltered = false;
+            return;
+        }
+        filteredCategories = categories.Where(c => c.Name.ToLower().Contains(e.Value.ToString().ToLower())).ToList();
+        isFiltered = true;
     }
 }
