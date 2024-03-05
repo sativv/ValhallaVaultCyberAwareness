@@ -42,7 +42,7 @@ namespace ValhallaVaultCyberAwareness.Repository
         }
         public async Task<List<SegmentModel>> GetSegmentsInCategoryAsync(int categoryId)
         {
-            return await context.Segments.Where(s => s.CategoryId == categoryId).ToListAsync();
+            return await context.Segments.Where(s => s.CategoryId == categoryId).Include(s => s.Questions).ToListAsync();
         }
 
         public async Task UpdateAsync(int id, SegmentModel newSegment)

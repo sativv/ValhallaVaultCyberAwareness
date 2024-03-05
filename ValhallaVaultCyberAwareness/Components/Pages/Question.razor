@@ -1,0 +1,73 @@
+﻿@page "/question/{Id:int}"
+@using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Managers
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+@inject QuestionManager questionManager
+@inject SignInManager<ApplicationUser> signInManager
+@inject AuthenticationStateProvider authenticationStateProvider
+@rendermode InteractiveServer
+
+<h3>Question</h3>
+@if(question != null)
+{
+	<h1>@question.Title</h1>
+	<h3>@question.Text</h3>
+}
+@if(answers != null)
+{
+	@foreach(var answer in answers)
+	{
+		<button class="btn btn-success mt-2" @onclick="() => Answer(answer.IsCorrectAnswer)">@answer.Text</button>
+		<br />
+	}
+}
+@if(questionIsAnswered)
+{
+	@if(answeredCorrectly)
+	{
+		<h3>You answered correctly!</h3>
+	}
+	else
+	{
+		<h3>Wrong answer!</h3>
+	}
+
+}
+
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	private QuestionModel? question;
+	private List<AnswerModel>? answers;
+	private bool questionIsAnswered;
+	private bool answeredCorrectly;
+
+	private ApplicationUser? signedInUser;
+	private AuthenticationState authenticationState;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		authenticationState = await authenticationStateProvider.GetAuthenticationStateAsync();
+		if (authenticationState.User.Identity.IsAuthenticated)
+		{
+			signedInUser = await signInManager.UserManager.GetUserAsync(authenticationState.User);
+		}
+
+		question = await uow.QuestionRepo.GetByIdAsync(Id);
+		answers = await uow.AnswerRepo.GetAnswersToQuestionsAsync(Id);
+	}
+
+	private async Task Answer(bool isCorrectAnswer)
+	{
+		if (questionIsAnswered) return;
+
+		await questionManager.SaveResponseToUser(Id, signedInUser, isCorrectAnswer);
+
+		questionIsAnswered = true;
+		answeredCorrectly = isCorrectAnswer;
+	}
+}
