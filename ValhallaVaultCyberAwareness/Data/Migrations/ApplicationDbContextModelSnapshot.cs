@@ -776,6 +776,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                         {
                             Id = 3,
                             CategoryId = 1,
+
                             Name = "Del 3"
                         },
                         new
