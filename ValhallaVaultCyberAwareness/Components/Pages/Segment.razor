@@ -25,16 +25,7 @@ else
                     <h3>@segment.InfoText</h3>
                     <p class="mb-2">The Subcategories in this segment are:</p>
                     
-                    @if(Subcategories != null)
-                    {
-                        @foreach (var subcategory in Subcategories.Where(s => s.SegmentId == segment.Id))
-                        {
-
-                            <a href="/Subcategory/@subcategory.Id">
-                                <h3 class="mb-1">@subcategory.Name</h3>
-                            </a>
-                        }
-                    }
+                   
                  
                 </div>
             </div>
@@ -48,13 +39,13 @@ else
     public int Id { get; set; }
     public CategoryModel ChosenCategory { get; set; }
     public List<SegmentModel> Segments { get; set; }
-    public List<SubCategoryModel> Subcategories { get; set; }
+    // public List<SubCategoryModel> Subcategories { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         ChosenCategory = await uow.CategoryRepo.GetByIdAsync(Id);
         Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(Id);
-        Subcategories = await uow.SubcategoryRepo.GetAllAsync();
+        // Subcategories = await uow.SubcategoryRepo.GetAllAsync();
 
     }
 

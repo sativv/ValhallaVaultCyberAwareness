@@ -6,39 +6,15 @@
 @attribute [Authorize]
 
 
-<h3>Subcategory</h3>
-@if (chosenSubcategory == null)
-{
-    <h1 class="text-white">Loading...</h1>
-} else
-{
-    <h1 class="text-white">@chosenSubcategory.Name</h1>
-    <h3> @chosenSubcategory.InfoText</h3>
 
-    @if (questions != null)
-    {
-        <ul>
-            @for (int i = 0; i < questions.Count(); i++)
-    {
-                <li><a href="/Question/@questions[i].Id">Question: @(i+1)</a></li>
-            }
-            
-        </ul>
-    }   
-    
-}
 
 @code {
     [Parameter]
     public int Id { get; set; }
-    public SubCategoryModel? chosenSubcategory { get; set; }
-    private List<QuestionModel>? questions;
-    private int questionNumber = 1;
-
 
     protected override async Task OnInitializedAsync()
     {
-        chosenSubcategory = await uow.SubcategoryRepo.GetByIdAsync(Id);
-        questions = await uow.QuestionRepo.GetQuestionsInSubcategoryAsnyc(Id);
+    
+
     }
 }

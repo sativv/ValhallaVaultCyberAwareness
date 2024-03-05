@@ -50,7 +50,7 @@ namespace ValhallaVaultCyberAwareness.Repository
             SegmentModel segmentToUpdate = await context.Segments.FirstOrDefaultAsync(s => s.Id == id);
             if (segmentToUpdate != null)
             {
-                segmentToUpdate.SubCategories = newSegment.SubCategories;
+                //segmentToUpdate.SubCategories = newSegment.SubCategories;
                 segmentToUpdate.InfoText = newSegment.InfoText;
                 segmentToUpdate.Category = newSegment.Category;
                 segmentToUpdate.CategoryId = newSegment.CategoryId;

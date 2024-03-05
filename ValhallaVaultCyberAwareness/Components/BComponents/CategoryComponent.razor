@@ -1,0 +1,28 @@
+﻿@using ValhallaVaultCyberAwareness.Models
+
+<div class="mb-4">
+    <div class="card bg-dark text-light text-center">
+        <button class="btn btn-dark" type="button" @onclick="ToggleCollapse">
+            @Category.Name
+        </button>
+    </div>
+    <div class="collapse" @class="IsCollapsed ? " " : " show"">
+        <!-- Additional content to show when the card is expanded -->
+        <div class="card-body">
+           <p>Ayyyyy</p>
+            <p>Additional information for @Category.Name</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public CategoryModel Category { get; set; }
+
+    private bool IsCollapsed { get; set; } = true;
+
+    private void ToggleCollapse()
+    {
+        IsCollapsed = !IsCollapsed;
+    }
+}

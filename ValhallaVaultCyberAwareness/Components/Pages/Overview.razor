@@ -20,11 +20,11 @@ sökruta för att söka på en kategori *@
 else
 {
     <input type="text" placeholder="Search" @oninput="FilterCategories" />
-    if (isFiltered && categories.Any())
-    {      
-        <div class="container mt-5  d-flex justify-content-center ">
-            <div class="row ">
-                <div class="col-md-10 mb-4">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 mb-4">
+                @if (isFiltered && filteredCategories.Any())
+                {
                     @foreach (var category in filteredCategories)
                     {
                         <div class="mb-4">
@@ -35,14 +35,9 @@ else
                             </div>
                         </div>
                     }
-                </div>
-            </div>
-        </div>
-    } else
-    {
-        <div class="container mt-5  d-flex justify-content-center ">
-            <div class="row ">
-                <div class="col-md-10 mb-4">
+                }
+                else
+                {
                     @foreach (var category in categories)
                     {
                         <div class="mb-4">
@@ -53,12 +48,11 @@ else
                             </div>
                         </div>
                     }
-                </div>
+                }
             </div>
         </div>
-    }
+    </div>
 }
-
 
 
 
