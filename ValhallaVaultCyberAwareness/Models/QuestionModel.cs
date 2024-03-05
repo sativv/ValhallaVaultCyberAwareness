@@ -17,6 +17,6 @@ namespace ValhallaVaultCyberAwareness.Models
         public SegmentModel? Segment { get; set; }
         public List<AnswerModel> Answers { get; set; } = new();
         public List<ResponseModel> Responses { get; } = new();
-
+        //test
     }
 }
