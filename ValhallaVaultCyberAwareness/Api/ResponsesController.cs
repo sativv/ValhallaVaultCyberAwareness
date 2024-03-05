@@ -7,43 +7,43 @@ using ValhallaVaultCyberAwareness.Repository;
 
 namespace ValhallaVaultCyberAwareness.Api
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class ResponsesController(ApplicationDbContext context) : ControllerBase
-	{
-		private readonly ValhallaUow uow = new(context);
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ResponsesController(ApplicationDbContext context) : ControllerBase
+    {
+        private readonly ValhallaUow uow = new(context);
 
-		// GET: api/<ResponsesController>
-		[HttpGet]
-		public async Task<ActionResult<List<ResponseModel>>> Get()
-		{
-			throw new NotImplementedException();
-			//return Ok(await uow.ResponseRepo.GetAllAsync());
-		}
+        // GET: api/<ResponsesController>
+        [HttpGet]
+        public async Task<ActionResult<List<ResponseModel>>> Get()
+        {
+            throw new NotImplementedException();
+            //return Ok(await uow.GetAllAsync());
+        }
 
-		// GET api/<ResponsesController>/5
-		[HttpGet("{id}")]
-		public string Get(int id)
-		{
-			return "value";
-		}
+        // GET api/<ResponsesController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
+        }
 
-		// POST api/<ResponsesController>
-		[HttpPost]
-		public void Post([FromBody] string value)
-		{
-		}
+        // POST api/<ResponsesController>
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
 
-		// PUT api/<ResponsesController>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
-		{
-		}
+        // PUT api/<ResponsesController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
 
-		// DELETE api/<ResponsesController>/5
-		[HttpDelete("{id}")]
-		public void Delete(int id)
-		{
-		}
-	}
+        // DELETE api/<ResponsesController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+    }
 }
