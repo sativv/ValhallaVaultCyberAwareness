@@ -3,7 +3,7 @@
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
-@attribute [Authorize]
+@* @attribute [Authorize] *@
 
 @if (ChosenCategory == null)
 {
@@ -18,18 +18,24 @@ else
 
         @foreach (var segment in Segments)
         {
-            <div class="card mb-4 text-light bg-dark">
+            <div class="card mb-4 text-light bg-dark text-">
                 <div class="card-body">
                     <h2>@segment.Name</h2>
                     <p class="mb-2">Some Information About This Segment:</p>
                     <h3>@segment.InfoText</h3>
                     <p class="mb-2">The Subcategories in this segment are:</p>
-                    @foreach (var category in Subcategories)
+                    
+                    @if(Subcategories != null)
                     {
-                        <a href="/Subcategory/@category.Id">
-                            <h3 class="mb-1">@category.Name</h3>
-                        </a>
+                        @foreach (var subcategory in Subcategories.Where(s => s.SegmentId == segment.Id))
+                        {
+
+                            <a href="/Subcategory/@subcategory.Id">
+                                <h3 class="mb-1">@subcategory.Name</h3>
+                            </a>
+                        }
                     }
+                 
                 </div>
             </div>
         }
@@ -48,6 +54,9 @@ else
     {
         ChosenCategory = await uow.CategoryRepo.GetByIdAsync(Id);
         Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(Id);
-        Subcategories = await uow.SubcategoryRepo.GetSubcategoriesInSegment(Id);
+        Subcategories = await uow.SubcategoryRepo.GetAllAsync();
+
     }
+
+ 
 }
