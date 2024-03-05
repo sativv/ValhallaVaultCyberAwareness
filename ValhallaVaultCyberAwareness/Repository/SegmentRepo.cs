@@ -45,7 +45,7 @@ namespace ValhallaVaultCyberAwareness.Repository
             return await context.Segments.Where(s => s.CategoryId == categoryId).ToListAsync();
         }
 
-        private async Task UpdateAsync(int id, SegmentModel newSegment)
+        public async Task UpdateAsync(int id, SegmentModel newSegment)
         {
             SegmentModel segmentToUpdate = await context.Segments.FirstOrDefaultAsync(s => s.Id == id);
             if (segmentToUpdate != null)

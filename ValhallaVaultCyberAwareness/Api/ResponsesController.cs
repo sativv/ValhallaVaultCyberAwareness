@@ -17,21 +17,29 @@ namespace ValhallaVaultCyberAwareness.Api
         [HttpGet]
         public async Task<ActionResult<List<ResponseModel>>> Get()
         {
-            throw new NotImplementedException();
-            //return Ok(await uow.GetAllAsync());
+            return Ok(await uow.ResponseRepo.GetAllAsync());
         }
 
         // GET api/<ResponsesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<ResponseModel>> Get(int id, [FromBody] ApplicationUser user)
         {
-            return "value";
+            return Ok(await uow.ResponseRepo.GetByIdAsync(user, id));
         }
 
         // POST api/<ResponsesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult> Post([FromBody] ResponseModel response)
         {
+            try
+            {
+                await uow.ResponseRepo.AddAsync(response);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // PUT api/<ResponsesController>/5
@@ -42,8 +50,17 @@ namespace ValhallaVaultCyberAwareness.Api
 
         // DELETE api/<ResponsesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id, [FromBody] ApplicationUser user)
         {
+            try
+            {
+                await uow.ResponseRepo.RemoveByIdAsync(user, id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }

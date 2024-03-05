@@ -44,8 +44,17 @@ namespace ValhallaVaultCyberAwareness.Api
 
         // PUT api/<SegmentsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> Put(int id, [FromBody] SegmentModel segment)
         {
+            try
+            {
+                await uow.SegmentRepo.UpdateAsync(id, segment);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // DELETE api/<SegmentsController>/5
