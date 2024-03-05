@@ -23,7 +23,7 @@ namespace ValhallaVaultCyberAwareness.Repository
 
         public SubcategoryRepo SubcategoryRepo { get; set; }
         public SegmentRepo SegmentRepo { get; set; }
-        public ResponseRepo ResponseRepo { get; set; }
+        public ResponseRepository ResponseRepo { get; set; }
 
 
     }
