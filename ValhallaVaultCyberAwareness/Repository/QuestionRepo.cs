@@ -35,7 +35,7 @@ namespace ValhallaVaultCyberAwareness.Repository
         }
         public async Task<List<QuestionModel>> GetQuestionsInSubcategoryAsnyc(int subcategoryId)
         {
-            return await context.Questions.Where(q => q.SubCategoryId == subcategoryId).ToListAsync();
+            return await context.Questions.Where(q => q.SegmentId == subcategoryId).ToListAsync();
         }
 
         public async Task<QuestionModel> AddAsync(QuestionModel questionToAdd)
@@ -52,8 +52,7 @@ namespace ValhallaVaultCyberAwareness.Repository
             {
                 questionToUpdate.Text = newQuestion.Text;
                 questionToUpdate.Answers = newQuestion.Answers;
-                questionToUpdate.SubCategory = newQuestion.SubCategory;
-                questionToUpdate.SubCategoryId = newQuestion.SubCategoryId;
+                questionToUpdate.SegmentId = newQuestion.SegmentId;
 
 
             }

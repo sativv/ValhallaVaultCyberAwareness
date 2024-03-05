@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValhallaVaultCyberAwareness.Data;
 
@@ -11,9 +12,11 @@ using ValhallaVaultCyberAwareness.Data;
 namespace ValhallaVaultCyberAwareness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240305130426_seedData")]
+    partial class seedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -589,6 +592,9 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.Property<int>("SegmentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubCategoryModelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
@@ -599,6 +605,8 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SegmentId");
+
+                    b.HasIndex("SubCategoryModelId");
 
                     b.ToTable("Questions");
 
@@ -776,7 +784,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
                         {
                             Id = 3,
                             CategoryId = 1,
-
                             Name = "Del 3"
                         },
                         new
@@ -821,6 +828,31 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             CategoryId = 3,
                             Name = "Del 3"
                         });
+                });
+
+            modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.SubCategoryModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("InfoText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SegmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SegmentId");
+
+                    b.ToTable("SubCategories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -893,6 +925,10 @@ namespace ValhallaVaultCyberAwareness.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ValhallaVaultCyberAwareness.Models.SubCategoryModel", null)
+                        .WithMany("Questions")
+                        .HasForeignKey("SubCategoryModelId");
+
                     b.Navigation("Segment");
                 });
 
@@ -926,6 +962,17 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.SubCategoryModel", b =>
+                {
+                    b.HasOne("ValhallaVaultCyberAwareness.Models.SegmentModel", "Segment")
+                        .WithMany()
+                        .HasForeignKey("SegmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Segment");
+                });
+
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.ApplicationUser", b =>
                 {
                     b.Navigation("Responses");
@@ -944,6 +991,11 @@ namespace ValhallaVaultCyberAwareness.Migrations
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.SegmentModel", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("ValhallaVaultCyberAwareness.Models.SubCategoryModel", b =>
                 {
                     b.Navigation("Questions");
                 });
