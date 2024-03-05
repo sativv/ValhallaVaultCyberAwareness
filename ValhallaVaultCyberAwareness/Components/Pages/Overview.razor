@@ -1,5 +1,6 @@
 ﻿@page "/home"
 @using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwareness.Components.BComponents
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @rendermode InteractiveServer
@@ -19,39 +20,44 @@ sökruta för att söka på en kategori *@
 }
 else
 {
-    <input type="text" placeholder="Search" @oninput="FilterCategories" />
-    <div class="container mt-5">
+    <div class="container vh-100 justify-content-center">
         <div class="row justify-content-center">
-            <div class="col-md-10 mb-4">
-                @if (isFiltered && filteredCategories.Any())
-                {
-                    @foreach (var category in filteredCategories)
+            <div class="col-md-8">
+                <input type="text" placeholder="Search" @oninput="FilterCategories" class="inputBorder mb-3 w-100" />
+                <div class="card bg-dark text-light text-center p-4" style="height: 100vh;">
+                    <h1 style="color:#21e8ef" class="mb-5">Browse Our Categories!</h1>
+                    @if (isFiltered && filteredCategories.Any())
                     {
-                        <div class="mb-4">
-                            <div class="card bg-dark text-light text-center">
-                                <a href="/Segment/@category.Id" style="text-decoration: none; color: inherit;">
-                                    <h1 class="p-3">@category.Name</h1>
-                                </a>
+                        @foreach (var category in filteredCategories)
+                        {
+                            <div class="mb-1">
+                                <CategoryComponent Category="category"></CategoryComponent>
                             </div>
-                        </div>
+                        }
                     }
-                }
-                else
-                {
-                    @foreach (var category in categories)
+                    else if (!filteredCategories.Any() && isFiltered)
                     {
-                        <div class="mb-4">
-                            <div class="card bg-dark text-light text-center">
-                                <a href="/Segment/@category.Id" style="text-decoration: none; color: inherit;">
-                                    <h1 class="p-3">@category.Name</h1>
-                                </a>
-                            </div>
-                        </div>
+                        <h3 style="color:#21e8ef;">Not Found..</h3>
                     }
-                }
+                    else
+                    {
+                        @foreach (var category in categories)
+                        {
+                            if (category != null)
+                            {
+                                <div class="mb-1">
+                                    <CategoryComponent Category="category"></CategoryComponent>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
             </div>
         </div>
     </div>
+
+
+
 }
 
 
@@ -69,6 +75,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         categories = await uow.CategoryRepo.GetAllAsync();
+
+        
     }
     private void navToSegmentPage(int id)
     {
