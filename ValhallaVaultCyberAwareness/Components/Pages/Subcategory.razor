@@ -6,24 +6,16 @@
 @attribute [Authorize]
 
 
-<h3>Subcategory</h3>
-@if (chosenSubcategory == null)
-{
-    <h1 class="text-white">Loading...</h1>
-} else
-{
-    <h1 class="text-white">@chosenSubcategory.Name</h1>
-    <h3> @chosenSubcategory.</h3>
-}
+<h3></h3>
 
 @code {
     [Parameter]
     public int Id { get; set; }
-    public SubCategoryModel chosenSubcategory { get; set; }
+   
     
 
     protected override async Task OnInitializedAsync()
     {
-        chosenSubcategory = await uow.SubcategoryRepo.GetByIdAsync(Id);
+    
     }
 }
