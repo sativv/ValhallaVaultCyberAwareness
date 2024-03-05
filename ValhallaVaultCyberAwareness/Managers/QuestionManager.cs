@@ -41,15 +41,52 @@ namespace ValhallaVaultCyberAwareness.Managers
 		/// <summary>
 		/// Räknar ut hur många procent rätt man har.
 		/// </summary>
-		/// <param name="subcategoryId">Id för subkategorin alla frågor ingår i</param>
+		/// <param name="segmentId">Id för subkategorin alla frågor ingår i</param>
 		/// <param name="user"></param>
 		/// <returns>Antal procentenheter, alltså inte 0.8 utan 80%</returns>
 		/// <exception cref="Exception"></exception>
-		public async Task<double> GotMoreThan80Percent(int subcategoryId, ApplicationUser user)
+		public async Task<double> GotMoreThan80Percent(int segmentId, ApplicationUser user)
 		{
-			List<QuestionModel> questions = await uow.QuestionRepo.GetQuestionsInSubcategoryAsnyc(subcategoryId);
+			List<QuestionModel> questions = await uow.QuestionRepo.GetQuestionsInSegmentAsnyc(segmentId);
 
 			return await GotMoreThan80Percent(questions, user);
+		}
+
+		public async Task SaveResponseToUser(int questionId, ApplicationUser user, bool isCorrectAnswer)
+		{
+			ResponseModel newResponse = new()
+			{
+				QuestionId = questionId,
+				UserId = user.Id,
+				IsAnsweredCorrectly = isCorrectAnswer
+			};
+
+			ResponseModel? existingResponse = await uow.ResponseRepo.GetByIdAsync(user, questionId);
+			//Om användaren redan har svarat på frågan tidigare uppdaterar vi det svaret
+			if (existingResponse != null)
+			{
+				try
+				{
+					await uow.ResponseRepo.UpdateAsync(questionId, user, newResponse);
+				}
+				catch
+				{
+					throw new Exception();
+				}
+			}
+			//Annars lägger vi till ett nytt svar
+			else
+			{
+				try
+				{
+					await uow.ResponseRepo.AddAsync(newResponse);
+				}
+				catch
+				{
+					throw new Exception("Something went wrong with adding answer. Maybe it's already answered");
+				}
+			}
+
 		}
 	}
 }
