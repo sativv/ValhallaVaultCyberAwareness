@@ -1,0 +1,51 @@
+﻿@page "/question/{Id:int}"
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+@rendermode InteractiveServer
+
+<h3>Question</h3>
+@if(question != null)
+{
+	<h1>@question.Text</h1>
+}
+@if(answers != null)
+{
+	@foreach(var answer in answers)
+	{
+		<button class="btn btn-success mt-2" @onclick="() => SeeIfCorrect(answer.IsCorrectAnswer)">@answer.Text</button>
+		<br />
+	}
+}
+@if(questionAnswered)
+{
+	@if(answerIsCorrect)
+	{
+		<h2>Correct answer!</h2>
+	}
+	else
+	{
+		<h3>Wrong answer</h3>
+	}
+}
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	private QuestionModel? question;
+	private List<AnswerModel>? answers;
+	private bool questionAnswered;
+	private bool answerIsCorrect;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		question = await uow.QuestionRepo.GetByIdAsync(Id);
+		answers = await uow.AnswerRepo.GetAnswersToQuestionsAsync(Id);
+	}
+
+	private void SeeIfCorrect(bool answer)
+	{
+		questionAnswered = true;
+		answerIsCorrect = answer;
+	}
+}
