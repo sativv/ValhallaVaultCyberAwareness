@@ -23,6 +23,13 @@ html, body {
         color:white;
     }
 
+.inputBorder {
+    background-color: transparent;
+    color: #21e8ef;
+    border: 3px solid #21e8ef;
+}
+
+
 a, .btn-link {
     color: #006bb7;
 }
