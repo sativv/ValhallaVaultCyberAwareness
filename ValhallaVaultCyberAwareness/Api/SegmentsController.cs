@@ -7,60 +7,60 @@ using ValhallaVaultCyberAwareness.Repository;
 
 namespace ValhallaVaultCyberAwareness.Api
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class SegmentsController(ApplicationDbContext context) : ControllerBase
-	{
-		private readonly ValhallaUow uow = new(context);
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SegmentsController(ApplicationDbContext context) : ControllerBase
+    {
+        private readonly ValhallaUow uow = new(context);
 
-		// GET: api/<SegmentsController>
-		[HttpGet]
-		public async Task<ActionResult<List<SegmentModel>>> Get()
-		{
-			return Ok(await uow.segmentRepo.GetAllAsync());
-		}
+        // GET: api/<SegmentsController>
+        [HttpGet]
+        public async Task<ActionResult<List<SegmentModel>>> Get()
+        {
+            return Ok(await uow.SegmentRepo.GetAllAsync());
+        }
 
-		// GET api/<SegmentsController>/5
-		[HttpGet("{id}")]
-		public async Task<ActionResult<SegmentModel>> Get(int id)
-		{
-			return Ok(await uow.segmentRepo.GetByIdAsync(id));
-		}
+        // GET api/<SegmentsController>/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SegmentModel>> Get(int id)
+        {
+            return Ok(await uow.SegmentRepo.GetByIdAsync(id));
+        }
 
-		// POST api/<SegmentsController>
-		[HttpPost]
-		public async Task<ActionResult> Post([FromBody] SegmentModel segment)
-		{
-			try
-			{
-				await uow.segmentRepo.AddAsync(segment);
-				return Ok();
-			}
-			catch
-			{
-				return BadRequest();
-			}
-		}
+        // POST api/<SegmentsController>
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] SegmentModel segment)
+        {
+            try
+            {
+                await uow.SegmentRepo.AddAsync(segment);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
 
-		// PUT api/<SegmentsController>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
-		{
-		}
+        // PUT api/<SegmentsController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
 
-		// DELETE api/<SegmentsController>/5
-		[HttpDelete("{id}")]
-		public async Task<ActionResult> Delete(int id)
-		{
-			try
-			{
-				await uow.segmentRepo.RemoveByIdAsync(id);
-				return Ok();
-			}
-			catch
-			{
-				return BadRequest();
-			}
-		}
-	}
+        // DELETE api/<SegmentsController>/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                await uow.SegmentRepo.RemoveByIdAsync(id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+    }
 }

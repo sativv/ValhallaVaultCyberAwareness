@@ -1,8 +1,10 @@
 ﻿@page "/home"
+@using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
 @inject NavigationManager navManager
+@attribute [Authorize]
 
 
 @* visa alla kategorier med nav till varje kategori

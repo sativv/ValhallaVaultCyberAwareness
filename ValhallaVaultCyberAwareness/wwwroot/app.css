@@ -5,6 +5,18 @@ html, body {
     background-size:cover;*/
 }
 
+.buttonBorder {
+    color: #21e8ef;
+    border: 2px solid #21e8ef;
+    background-color: transparent;
+    border-radius: 0 !important;
+}
+
+    .buttonBorder:hover {
+        border: 2px solid #21e8ef;
+        color: black;
+        background-color: #21e8ef;
+    }
 
 
 a, .btn-link {
