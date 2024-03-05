@@ -1,7 +1,9 @@
 ﻿@page "/Segment/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
+@attribute [Authorize]
 
 @if (ChosenCategory == null)
 {
@@ -45,7 +47,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         ChosenCategory = await uow.CategoryRepo.GetByIdAsync(Id);
-        Segments = await uow.segmentRepo.GetSegmentsInCategoryAsync(Id);
+        Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(Id);
         Subcategories = await uow.SubcategoryRepo.GetSubcategoriesInSegment(Id);
     }
 }

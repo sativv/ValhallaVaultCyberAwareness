@@ -13,7 +13,8 @@ namespace ValhallaVaultCyberAwareness.Repository
             AnswerRepo = new(context);
             QuestionRepo = new(context);
             SubcategoryRepo = new(context);
-            segmentRepo = new(context);
+            SegmentRepo = new(context);
+
         }
 
         public AnswerRepo AnswerRepo { get; set; }
@@ -21,7 +22,8 @@ namespace ValhallaVaultCyberAwareness.Repository
         public QuestionRepo QuestionRepo { get; set; }
 
         public SubcategoryRepo SubcategoryRepo { get; set; }
-        public SegmentRepo segmentRepo { get; set; }
+        public SegmentRepo SegmentRepo { get; set; }
+        public ResponseRepo ResponseRepo { get; set; }
 
 
     }

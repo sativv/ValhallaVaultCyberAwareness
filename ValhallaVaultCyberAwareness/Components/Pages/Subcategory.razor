@@ -1,7 +1,11 @@
 ﻿@page "/Subcategory/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
+@attribute [Authorize]
+
+
 <h3>Subcategory</h3>
 @if (chosenSubcategory == null)
 {
