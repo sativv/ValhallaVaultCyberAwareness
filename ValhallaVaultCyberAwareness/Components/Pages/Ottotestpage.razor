@@ -1,0 +1,43 @@
+﻿@page "/ottotestpage"
+@using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Managers
+@using ValhallaVaultCyberAwareness.Repository
+@inject QuestionManager manager
+@inject ValhallaUow uow
+@inject SignInManager<ApplicationUser> signInManager
+@inject AuthenticationStateProvider authenticationStateProvider
+@rendermode InteractiveServer
+
+<h3>Hej Otto! Ha så kul</h3>
+
+@if (correctPercentage >= 80)
+{
+	<h4>Du har tillräckligt många rätt!</h4>
+	<h5>Du har @correctPercentage% rätt</h5>
+}
+else
+{
+	<h4>Git good</h4>
+	<h5>Du har @correctPercentage% rätt</h5>
+}
+
+@code {
+	private double correctPercentage;
+	private ApplicationUser? signedInUser;
+	private AuthenticationState authenticationState;
+
+	protected override async Task OnInitializedAsync()
+	{
+		authenticationState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+		if (authenticationState.User.Identity.IsAuthenticated)
+		{
+			signedInUser = await signInManager.UserManager.GetUserAsync(authenticationState.User);
+		}
+
+
+
+		correctPercentage = await manager.GotMoreThan80Percent(1, signedInUser);
+	}
+}

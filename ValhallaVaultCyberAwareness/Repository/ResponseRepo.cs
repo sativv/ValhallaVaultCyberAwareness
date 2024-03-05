@@ -19,11 +19,14 @@ namespace ValhallaVaultCyberAwareness.Repository
             return await context.Responses.ToListAsync();
         }
 
-
-
         public async Task<ResponseModel?> GetByIdAsync(ApplicationUser user, int questionId)
         {
             return await context.Responses.FirstOrDefaultAsync(r => r.User == user && r.QuestionId == questionId);
+        }
+
+        public async Task<List<ResponseModel>> GetAllResponsesToQuestion(ApplicationUser user, int questionId)
+        {
+            return await context.Responses.Where(r => r.User == user && r.QuestionId == questionId).ToListAsync();
         }
 
         public async Task RemoveByIdAsync(ApplicationUser user, int questionId)
@@ -62,5 +65,4 @@ namespace ValhallaVaultCyberAwareness.Repository
             await context.SaveChangesAsync();
         }
     }
-}
 }
