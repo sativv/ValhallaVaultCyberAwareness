@@ -4,11 +4,11 @@ using ValhallaVaultCyberAwareness.Models;
 
 namespace ValhallaVaultCyberAwareness.Repository
 {
-    public class ResponseRepository
+    public class ResponseRepo
     {
         private readonly ApplicationDbContext context;
 
-        public ResponseRepository(ApplicationDbContext context)
+        public ResponseRepo(ApplicationDbContext context)
         {
             this.context = context;
         }
@@ -37,7 +37,7 @@ namespace ValhallaVaultCyberAwareness.Repository
 
         }
 
-        private async Task UpdateAsync(int questionId, ApplicationUser user, ResponseModel newResponse)
+        public async Task UpdateAsync(int questionId, ApplicationUser user, ResponseModel newResponse)
         {
             ResponseModel responseToUpdate = await context.Responses.FirstOrDefaultAsync(r => r.User == user && r.QuestionId == questionId);
             if (responseToUpdate != null)

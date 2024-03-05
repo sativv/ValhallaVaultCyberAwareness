@@ -46,7 +46,15 @@ namespace ValhallaVaultCyberAwareness.Api
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] QuestionModel question)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await uow.QuestionRepo.UpdateAsync(id, question);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // DELETE api/<QuestionsController>/5
