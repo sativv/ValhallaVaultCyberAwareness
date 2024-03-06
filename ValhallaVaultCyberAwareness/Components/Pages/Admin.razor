@@ -63,7 +63,7 @@ else
                             <input type="text" class="inputBorder mb-2 w-75" @bind=segmentName placeholder="Segment Name" required>
                             <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Segment Information" @bind=segmentInformation required></textarea>
                             <select @bind="segmentCategoryId" class="inputBorder mb-2 w-75" required>
-                                <option >Select Category</option>
+                                <option selected>Select Category</option>
                                 @foreach (var category in Categories)
                                 {
                                     <option value="@category.Id" style="background-color:#292b2c" >@category.Name</option>
@@ -81,7 +81,7 @@ else
                 <div class="card">
                     <div class="card-body bg-dark" style="border:1px solid #21e8ef">
                         <h3 class="card-title text-center">Add a new question!</h3>
-                        @if(ErrorMessageQuestion != "")
+                        @if (ErrorMessageQuestion != "")
                         {
                             <div class="alert alert-danger" role="alert">
                                 @ErrorMessageQuestion
@@ -98,19 +98,36 @@ else
                             <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Question Text" @bind=questionText required></textarea>
                             <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Explanation Text" @bind=questionExplanationText required></textarea>
                             <select @bind="questionSegmentId" class="inputBorder mb-2 w-75" required>
-                                <option >Select Segment</option>
+                                <option>Select Segment</option>
                                 @foreach (var segment in Segments)
                                 {
                                     var category = Categories.FirstOrDefault(c => c.Id == segment.CategoryId);
-                                    <option value="@segment.Id" style="background-color:#292b2c">@segment.Name i @category.Name </option>
+                                    <option value="@segment.Id" style="background-color:#292b2c;">@segment.Name in @category.Name </option>
                                 }
+                            </select>
+                            <input type="text" class="inputBorder mb-2 w-75" placeholder="First Answer" @bind=firstAnswer required>
+                            <select class="inputBorder mb-2 w-75" @bind=isFirstAnswerCorrect>
+                                <option value="True" style="background-color:#292b2c; color:green !important;">True</option>
+                                <option value="False" style="background-color:#292b2c; color:red !important;">False</option>
+                            </select>
+                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Second Answer" @bind=secondAnswer required>
+                            <select class="inputBorder mb-2 w-75" @bind=isSecondAnswerCorrect>
+                                <option value="True" style="background-color:#292b2c; color:green !important;">True</option>
+                                <option value="False" style="background-color:#292b2c; color:red !important;">False</option>
+                            </select>
+                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Third Answer" @bind=thirdAnswer required>
+                            <select class="inputBorder mb-2 w-75" @bind=isThirdAnswerCorrect>
+                                <option value="True" style="background-color:#292b2c; color:green !important;">True</option>
+                                <option value="False" style="background-color:#292b2c;color:red !important;">False</option>
                             </select>
                             <button class="btn btn-lg buttonBorder btn-block" @onclick="AddQuestion">Add Question</button>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 }
 
@@ -120,7 +137,15 @@ else
     private List<SegmentModel> Segments { get; set; }
     private string segmentName;
     private string segmentInformation;
-    private int segmentCategoryId;
+    private int? segmentCategoryId;
+
+    private string firstAnswer = "";
+    private string secondAnswer = "";
+    private string thirdAnswer = "";
+
+    private string isFirstAnswerCorrect = "";
+    private string isSecondAnswerCorrect = "";
+    private string isThirdAnswerCorrect = "";
 
     private string ErrorMessageQuestion = "";
     private string ErrorMessageCategory = "";
@@ -134,7 +159,7 @@ else
     private string questionText;
     private string questionExplanationText;
     private string questionTitle;
-    private int questionSegmentId;
+    private int? questionSegmentId;
 
 
     protected override async Task OnInitializedAsync()
@@ -153,15 +178,16 @@ else
         {
             Name = segmentName,
             InfoText = segmentInformation,
-            CategoryId = segmentCategoryId
+            CategoryId = segmentCategoryId.Value
         };
             await uow.SegmentRepo.AddAsync(segmentToAdd);
             await uow.SegmentRepo.SaveChangesAsync();
             segmentName = "";
             segmentInformation = "";
-            segmentCategoryId = 0;
+            segmentCategoryId = 1;
+            ErrorMessageSegment = "";
             SegmentSuccessMessage = $"The {segmentToAdd.Name} Segment Was Successfully Added";
-            StateHasChanged();
+
         } else
         {
             ErrorMessageSegment = "You are required to all fields and pick a category in order to add a new segment!";
@@ -182,8 +208,9 @@ else
             await uow.CategoryRepo.AddAsync(categoryToAdd);
             await uow.CategoryRepo.SaveChangesAsync();
             categoryName = "";
+            ErrorMessageCategory = "";
             CategorySuccessMessage = $"The {categoryToAdd.Name}Category Was Successfully Created!";
-            StateHasChanged();
+
         }
         else
         {
@@ -194,7 +221,20 @@ else
 
     private async Task AddQuestion()
     {
-        if ( questionTitle != null && questionText != null && questionExplanationText != null && questionSegmentId != null)
+        int trueAnswerCount = 0;
+        if (isFirstAnswerCorrect == "True") trueAnswerCount++;
+        if (isSecondAnswerCorrect == "True") trueAnswerCount++;
+        if (isThirdAnswerCorrect == "True") trueAnswerCount++;
+
+        if (trueAnswerCount != 1)
+        {
+            if (trueAnswerCount > 1) ErrorMessageQuestion = "Only ONE answer can be correct";
+            if (trueAnswerCount < 1) ErrorMessageQuestion = "One answer must be marked as correct";
+            return;
+        }
+
+
+        if ( !string.IsNullOrEmpty(questionTitle) &&  !string.IsNullOrEmpty(questionText)  && !string.IsNullOrEmpty(questionExplanationText)  && questionSegmentId > 0 )
         {
 
 
@@ -202,22 +242,71 @@ else
                 {
                     Title = questionTitle,
                     ExplanationText = questionExplanationText,
-                    SegmentId = questionSegmentId,
+                    SegmentId = questionSegmentId.Value,
                     Text = questionText
                 };
             await uow.QuestionRepo.AddAsync(questionToAdd);
-            await uow.QuestionRepo.SaveChangesAsync();
+
+
+            await AddAnswers(questionToAdd.Id);
             questionTitle = "";
             questionText = "";
             questionExplanationText = "";
             questionSegmentId = 0;
+            ErrorMessageQuestion = "";
             QuestionSuccessMessage = "Question Added Succesfully!";
-            StateHasChanged();
+
+
         }
         else
         {
             ErrorMessageQuestion = "You are required to all fields and pick a segment in order to add a new question!";
+
         }
 
     }
+
+    private async Task AddAnswers(int questionId)
+    {
+       
+
+     
+
+
+                AnswerModel firstAnswerToAdd = new()
+            {
+                QuestionId = questionId,
+                IsCorrectAnswer = isFirstAnswerCorrect=="True" ? true:false,
+                Text = firstAnswer
+
+            };
+
+                await uow.AnswerRepo.AddAsync(firstAnswerToAdd);
+
+
+            AnswerModel secondAnswerToAdd = new()
+            {
+                QuestionId = questionId,
+                Text = secondAnswer,
+                IsCorrectAnswer = isSecondAnswerCorrect == "True" ? true:false
+            };
+
+            await uow.AnswerRepo.AddAsync(secondAnswerToAdd);
+
+
+
+            AnswerModel thirdAnswerToAdd = new()
+            {
+                QuestionId = questionId,
+                Text = thirdAnswer,
+                IsCorrectAnswer = isThirdAnswerCorrect == "True"? true:false
+            };
+
+            await uow.AnswerRepo.AddAsync(thirdAnswerToAdd);
+    } 
+        
+           
+
+        
+    
 }
