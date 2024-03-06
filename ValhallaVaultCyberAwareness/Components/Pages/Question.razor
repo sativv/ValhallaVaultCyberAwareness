@@ -34,6 +34,21 @@
 	{
 		<h3>Wrong answer!</h3>
 	}
+	<br />
+
+	<p>Förklaring: @question.ExplanationText</p>
+
+	@if(nextQuestionId != 0)
+	{
+		<a href="/question/@nextQuestionId">Next question</a>
+	}
+	else
+	{
+		<h2>You got @correctPercentage% correct in this segment!</h2>
+		<a href="/segment/@question.SegmentId">Summary</a>
+	}
+
+
 
 }
 
@@ -45,6 +60,8 @@
 	private List<AnswerModel>? answers;
 	private bool questionIsAnswered;
 	private bool answeredCorrectly;
+	private int nextQuestionId;
+	private double correctPercentage;
 
 	private ApplicationUser? signedInUser;
 	private AuthenticationState authenticationState;
@@ -59,6 +76,8 @@
 
 		question = await uow.QuestionRepo.GetByIdAsync(Id);
 		answers = await uow.AnswerRepo.GetAnswersToQuestionsAsync(Id);
+		nextQuestionId = await questionManager.GetNextQuestionId(Id);
+
 	}
 
 	private async Task Answer(bool isCorrectAnswer)
@@ -69,5 +88,10 @@
 
 		questionIsAnswered = true;
 		answeredCorrectly = isCorrectAnswer;
+
+		if(nextQuestionId == 0)
+		{
+			correctPercentage = await questionManager.CalculateCorrectPercentage(question.SegmentId, signedInUser);
+		}
 	}
 }
