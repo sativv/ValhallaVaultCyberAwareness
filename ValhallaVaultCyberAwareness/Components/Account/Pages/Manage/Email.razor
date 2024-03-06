@@ -24,7 +24,6 @@
         </form>
         <EditForm Model="Input" FormName="change-email" OnValidSubmit="OnValidSubmitAsync" method="post">
             <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
             @if (isEmailConfirmed)
             {
                 <div class="form-floating mb-3 input-group">
@@ -48,7 +47,7 @@
                 <label for="new-email" class="form-label">New email</label>
                 <ValidationMessage For="() => Input.NewEmail" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Change email</button>
+            <button type="submit" class="btn btn-lg buttonBorder">Change email</button>
         </EditForm>
     </div>
 </div>
