@@ -1,4 +1,5 @@
-﻿@using ValhallaVaultCyberAwareness.Models 
+﻿@using ValhallaVaultCyberAwareness.Managers
+@using ValhallaVaultCyberAwareness.Models 
 @using Microsoft.JSInterop
 @using ValhallaVaultCyberAwareness.Repository
 @rendermode InteractiveServer
@@ -46,6 +47,7 @@
         if (IsCollapsed && Segments == null)
         {
             Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(Category.Id);
+           
         }
     }
 
@@ -53,6 +55,8 @@
     {
         NavigationManager.NavigateTo($"/Segment/{segmentId}");
     }
+
+
 }
 
 
