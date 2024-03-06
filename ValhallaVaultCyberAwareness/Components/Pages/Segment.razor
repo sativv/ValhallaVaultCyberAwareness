@@ -27,7 +27,7 @@ else
                     <ul>
                         @foreach (var question in segment.Questions)
                         {
-                            <li><a>@question.Title</a></li>
+                            <li><a href="/question/@question.Id">@question.Title</a></li>
                         }
                     </ul>             
                 </div>
@@ -40,12 +40,14 @@ else
 @code {
     [Parameter]
     public int Id { get; set; }
+    public SegmentModel? ChosenSegment { get; set; }
     public CategoryModel? ChosenCategory { get; set; }
     public List<SegmentModel>? Segments { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        ChosenCategory = await uow.CategoryRepo.GetByIdAsync(Id);
-        Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(Id);
+        ChosenSegment = await uow.SegmentRepo.GetByIdAsync(Id);
+        ChosenCategory = await uow.CategoryRepo.GetByIdAsync(ChosenSegment.CategoryId);
+        Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(ChosenSegment.CategoryId);
     }
 }
