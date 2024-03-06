@@ -34,7 +34,7 @@
             </div>
 
             <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.UserName" class="form-control inputBorder"  aria-required="true" placeholder="User name" />
+                <InputText @bind-Value="Input.UserName" class="form-control inputBorder"  aria-required="true" placeholder="User name" />
                 <label for="username">Username</label>
                 <ValidationMessage For="() => Input.UserName" class="text-danger" />
             </div>
