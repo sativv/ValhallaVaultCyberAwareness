@@ -20,7 +20,7 @@
 {
 	@foreach(var answer in answers)
 	{
-		<button class="btn btn-success mt-2" @onclick="() => Answer(answer.IsCorrectAnswer)">@answer.Text</button>
+		<button class="btn mt-2 @(answer.IsCorrectAnswer ? correctColor : wrongColor)" @onclick="() => Answer(answer.IsCorrectAnswer)">@answer.Text</button>
 		<br />
 	}
 }
@@ -62,6 +62,8 @@
 	private bool answeredCorrectly;
 	private int nextQuestionId;
 	private double correctPercentage;
+	private string correctColor = "btn-primary";
+	private string wrongColor = "btn-primary";
 
 	private ApplicationUser? signedInUser;
 	private AuthenticationState authenticationState;
@@ -88,6 +90,9 @@
 
 		questionIsAnswered = true;
 		answeredCorrectly = isCorrectAnswer;
+
+		correctColor = "btn-success";
+		wrongColor = "btn-danger";
 
 		if(nextQuestionId == 0)
 		{

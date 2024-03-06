@@ -1,11 +1,15 @@
 ﻿@page "/home"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
 @using ValhallaVaultCyberAwareness.Components.BComponents
+@using ValhallaVaultCyberAwareness.Data
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @rendermode InteractiveServer
 @inject ValhallaUow uow
 @inject NavigationManager navManager
+@inject SignInManager<ApplicationUser> signInManager
+@inject AuthenticationStateProvider authenticationStateProvider
 @attribute [Authorize]
 
 
@@ -31,7 +35,7 @@ else
                         @foreach (var category in filteredCategories)
                         {
                             <div class="mb-1">
-                                <CategoryComponent Category="category"></CategoryComponent>
+                                <CategoryComponent Category="category" SignedInUser="@signedInUser"></CategoryComponent>
                             </div>
                         }
                     }
@@ -46,7 +50,7 @@ else
                             if (category != null)
                             {
                                 <div class="mb-1">
-                                    <CategoryComponent Category="category"></CategoryComponent>
+                                    <CategoryComponent Category="category" SignedInUser="@signedInUser"></CategoryComponent>
                                 </div>
                             }
                         }
@@ -66,6 +70,9 @@ else
     List<CategoryModel> categories = new();
     List<CategoryModel> filteredCategories = new();
 
+    private ApplicationUser? signedInUser;
+    private AuthenticationState authenticationState;
+
     [Parameter]
     public string filterString { get; set; }
 
@@ -76,8 +83,13 @@ else
     {
         categories = await uow.CategoryRepo.GetAllAsync();
 
-        
+        authenticationState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (authenticationState.User.Identity.IsAuthenticated)
+        {
+            signedInUser = await signInManager.UserManager.GetUserAsync(authenticationState.User);
+        }
     }
+
     private void navToSegmentPage(int id)
     {
         navManager.NavigateTo($"/Category/{id}");
