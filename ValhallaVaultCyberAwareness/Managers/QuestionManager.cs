@@ -15,7 +15,7 @@ namespace ValhallaVaultCyberAwareness.Managers
 		/// <param name="user"></param>
 		/// <returns>Antal procentenheter, alltså inte 0.8 utan 80%</returns>
 		/// <exception cref="Exception"></exception>
-		public async Task<double> GotMoreThan80Percent(List<QuestionModel> questions, ApplicationUser user)
+		public async Task<double> CalculateCorrectPercentage(List<QuestionModel> questions, ApplicationUser user)
 		{
 			List<ResponseModel> answeredResponses = new();
 			double correctAnswers = 0;
@@ -35,7 +35,6 @@ namespace ValhallaVaultCyberAwareness.Managers
 
 			return Math.Round(correctAnswers / questions.Count() * 100, 2);
 
-
 		}
 
 		/// <summary>
@@ -45,13 +44,21 @@ namespace ValhallaVaultCyberAwareness.Managers
 		/// <param name="user"></param>
 		/// <returns>Antal procentenheter, alltså inte 0.8 utan 80%</returns>
 		/// <exception cref="Exception"></exception>
-		public async Task<double> GotMoreThan80Percent(int segmentId, ApplicationUser user)
+		public async Task<double> CalculateCorrectPercentage(int segmentId, ApplicationUser user)
 		{
 			List<QuestionModel> questions = await uow.QuestionRepo.GetQuestionsInSegmentAsnyc(segmentId);
 
-			return await GotMoreThan80Percent(questions, user);
+			return await CalculateCorrectPercentage(questions, user);
 		}
 
+		/// <summary>
+		/// Sparar svaret användaren gör i databasen. Om användaren redan har svarat på frågan skrivs det gamla svaret över med det nya
+		/// </summary>
+		/// <param name="questionId"></param>
+		/// <param name="user"></param>
+		/// <param name="isCorrectAnswer"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
 		public async Task SaveResponseToUser(int questionId, ApplicationUser user, bool isCorrectAnswer)
 		{
 			ResponseModel newResponse = new()
@@ -87,6 +94,36 @@ namespace ValhallaVaultCyberAwareness.Managers
 				}
 			}
 
+		}
+
+		/// <summary>
+		/// Returnerar questionId på följande fråga i segmentet. Om det är sista frågan i segmentet så returnas 0.
+		/// </summary>
+		/// <param name="questionId"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public async Task<int> GetNextQuestionId(int questionId)
+		{
+			QuestionModel? currentQuestion = await uow.QuestionRepo.GetByIdAsync(questionId);
+
+			if (currentQuestion == null) throw new Exception();
+
+			SegmentModel? currentSegment = await uow.SegmentRepo.GetByIdAsync(currentQuestion.SegmentId);
+
+			if (currentSegment == null) throw new Exception();
+
+			int indexOfQuestion = currentSegment.Questions.IndexOf(currentQuestion);
+
+			if (indexOfQuestion == currentSegment.Questions.Count() - 1)
+			{
+				//Last question. Return something here
+				return 0;
+			}
+			else
+			{
+				QuestionModel nextQuestion = currentSegment.Questions[indexOfQuestion + 1];
+				return nextQuestion.Id;
+			}
 		}
 	}
 }

@@ -40,6 +40,6 @@ else
 			signedInUser = await signInManager.UserManager.GetUserAsync(authenticationState.User);
 		}
 
-		correctPercentage = await manager.GotMoreThan80Percent(1, signedInUser);
+		correctPercentage = await manager.CalculateCorrectPercentage(1, signedInUser);
 	}
 }

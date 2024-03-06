@@ -27,7 +27,7 @@ else
                     <ul>
                         @foreach (var question in segment.Questions)
                         {
-                            <li><a>@question.Title</a></li>
+                            <li><a href="/question/@question.Id">@question.Title</a></li>
                         }
                     </ul>             
                 </div>
