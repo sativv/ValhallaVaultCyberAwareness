@@ -1,9 +1,223 @@
 ﻿@page "/Admin"
 @using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
 @attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
+@inject ValhallaUow uow 
 
-<h3>YOU ARE GOOD ADMINISTRATOR :THUMBS UP: </h3>
+
+<h3>Good Work Mr Admin! </h3>
+
+@if (Categories == null || Segments == null)
+{
+    <h1>Loading..</h1>
+}
+else
+{
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body bg-dark" style="border:1px solid #21e8ef">
+                        <h3 class="card-title text-center">Create a new Category!</h3>
+                        @if (ErrorMessageCategory != "")
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @ErrorMessageCategory
+                            </div>
+                        } else if (CategorySuccessMessage != "")
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @CategorySuccessMessage
+                            </div>
+                        }
+                        <div class="d-flex flex-column align-items-center">
+                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Category Name" @bind=categoryName required>
+                            <button class="btn btn-lg buttonBorder btn-block" @onclick="AddCategory">Add Category</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body bg-dark" style="border:1px solid #21e8ef">
+                        <h3 class="card-title text-center">Create a new Segment!</h3>
+                        @if (ErrorMessageSegment != "")
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @ErrorMessageSegment
+                            </div>
+                        }
+                        else if (SegmentSuccessMessage != "")
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @SegmentSuccessMessage
+                            </div>
+                        }
+                        
+                        <div class="d-flex flex-column align-items-center">
+                            <input type="text" class="inputBorder mb-2 w-75" @bind=segmentName placeholder="Segment Name" required>
+                            <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Segment Information" @bind=segmentInformation required></textarea>
+                            <select @bind="segmentCategoryId" class="inputBorder mb-2 w-75" required>
+                                <option >Select Category</option>
+                                @foreach (var category in Categories)
+                                {
+                                    <option value="@category.Id" style="background-color:#292b2c" >@category.Name</option>
+                                }
+                            </select>
+                            <button class="btn btn-lg buttonBorder btn-block" @onclick="AddSegment">Add Segment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body bg-dark" style="border:1px solid #21e8ef">
+                        <h3 class="card-title text-center">Add a new question!</h3>
+                        @if(ErrorMessageQuestion != "")
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @ErrorMessageQuestion
+                            </div>
+                        }
+                        else if (QuestionSuccessMessage != "")
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @QuestionSuccessMessage
+                            </div>
+                        }
+                        <div class="d-flex flex-column align-items-center">
+                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Title" @bind=questionTitle required>
+                            <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Question Text" @bind=questionText required></textarea>
+                            <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Explanation Text" @bind=questionExplanationText required></textarea>
+                            <select @bind="questionSegmentId" class="inputBorder mb-2 w-75" required>
+                                <option >Select Segment</option>
+                                @foreach (var segment in Segments)
+                                {
+                                    var category = Categories.FirstOrDefault(c => c.Id == segment.CategoryId);
+                                    <option value="@segment.Id" style="background-color:#292b2c">@segment.Name i @category.Name </option>
+                                }
+                            </select>
+                            <button class="btn btn-lg buttonBorder btn-block" @onclick="AddQuestion">Add Question</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 
 @code {
+    private List<CategoryModel> Categories { get; set; }
+    private List<SegmentModel> Segments { get; set; }
+    private string segmentName;
+    private string segmentInformation;
+    private int segmentCategoryId;
 
+    private string ErrorMessageQuestion = "";
+    private string ErrorMessageCategory = "";
+    private string ErrorMessageSegment = "";
+    private string QuestionSuccessMessage = "";
+    private string SegmentSuccessMessage = "";
+    private string CategorySuccessMessage = "";
+
+    private string categoryName;
+
+    private string questionText;
+    private string questionExplanationText;
+    private string questionTitle;
+    private int questionSegmentId;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Segments = await uow.SegmentRepo.GetAllAsync();
+        Categories = await uow.CategoryRepo.GetAllAsync();
+    }
+
+    private async Task AddSegment()
+    {
+        if(segmentName != null && segmentInformation != null && segmentCategoryId != null)
+        {
+
+
+            SegmentModel segmentToAdd = new()
+        {
+            Name = segmentName,
+            InfoText = segmentInformation,
+            CategoryId = segmentCategoryId
+        };
+            await uow.SegmentRepo.AddAsync(segmentToAdd);
+            await uow.SegmentRepo.SaveChangesAsync();
+            segmentName = "";
+            segmentInformation = "";
+            segmentCategoryId = 0;
+            SegmentSuccessMessage = $"The {segmentToAdd.Name} Segment Was Successfully Added";
+            StateHasChanged();
+        } else
+        {
+            ErrorMessageSegment = "You are required to all fields and pick a category in order to add a new segment!";
+        }
+
+    }
+
+    private async Task AddCategory()
+    {
+        if (categoryName != null)
+        {
+            CategoryModel categoryToAdd = new()
+                {
+                    Name = categoryName,
+
+                };
+
+            await uow.CategoryRepo.AddAsync(categoryToAdd);
+            await uow.CategoryRepo.SaveChangesAsync();
+            categoryName = "";
+            CategorySuccessMessage = $"The {categoryToAdd.Name}Category Was Successfully Created!";
+            StateHasChanged();
+        }
+        else
+        {
+            ErrorMessageCategory = "You are required to all fields in order to add a new category!";
+        }
+
+    }
+
+    private async Task AddQuestion()
+    {
+        if ( questionTitle != null && questionText != null && questionExplanationText != null && questionSegmentId != null)
+        {
+
+
+            QuestionModel questionToAdd = new()
+                {
+                    Title = questionTitle,
+                    ExplanationText = questionExplanationText,
+                    SegmentId = questionSegmentId,
+                    Text = questionText
+                };
+            await uow.QuestionRepo.AddAsync(questionToAdd);
+            await uow.QuestionRepo.SaveChangesAsync();
+            questionTitle = "";
+            questionText = "";
+            questionExplanationText = "";
+            questionSegmentId = 0;
+            QuestionSuccessMessage = "Question Added Succesfully!";
+            StateHasChanged();
+        }
+        else
+        {
+            ErrorMessageQuestion = "You are required to all fields and pick a segment in order to add a new question!";
+        }
+
+    }
 }
