@@ -1,10 +1,12 @@
-﻿@using ValhallaVaultCyberAwareness.Managers
+﻿@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Managers
 @using ValhallaVaultCyberAwareness.Models 
 @using Microsoft.JSInterop
 @using ValhallaVaultCyberAwareness.Repository
 @rendermode InteractiveServer
 @inject ValhallaUow uow
 @inject NavigationManager NavigationManager
+@inject ProgressManager progressManager
 <p>
     <button class="btn buttonBorder w-50" type="button" @onclick="ToggleCollapse">
         @Category.Name
@@ -17,8 +19,9 @@
             {   <div class="d-flex flex-column align-items-center">
                     @foreach (var segment in Segments)
                     {
-                        <button @onclick="(() => NavigateToSegment(segment.Id))" class="text-light btn btn-lg mt-1" style="border:1px solid #21e8ef; width:50%">@segment.Name</button>
-
+                        @* segment.IsAvailable finns på SegmentViewModels och visar om användaren har tillgång till segmentet *@
+                        <button @onclick="(() => NavigateToSegment(segment))" class=" btn btn-lg mt-1 @(segment.IsAvailable ? "text-light" : "text-danger")" style="border:1px solid #21e8ef; width:50%">@segment.Name</button>
+                        <p>@(segment.IsAvailable ? $"{segment.SegmentProgress}% complete" : "Finish previous segment")</p>
                     }
                 </div>
                 
@@ -35,10 +38,12 @@
 @code {
     [Parameter]
     public CategoryModel? Category { get; set; }
+    [Parameter]
+    public ApplicationUser? SignedInUser { get; set; }
 
     private bool IsCollapsed { get; set; } = false;
 
-    private List<SegmentModel>? Segments { get; set; } = null;
+    private List<SegmentViewModel>? Segments { get; set; } = null;
 
     private async Task ToggleCollapse()
     {
@@ -46,14 +51,16 @@
 
         if (IsCollapsed && Segments == null)
         {
-            Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(Category.Id);
-           
+            Segments = await progressManager.GetSegmentProgressInCategoryAsync(SignedInUser, Category.Id);
         }
     }
 
-    private void NavigateToSegment(int segmentId)
+    private void NavigateToSegment(SegmentViewModel segment)
     {
-        NavigationManager.NavigateTo($"/Segment/{segmentId}");
+        if(segment.IsAvailable)
+        {
+            NavigationManager.NavigateTo($"/Segment/{segment.Id}");
+        }
     }
 
 
