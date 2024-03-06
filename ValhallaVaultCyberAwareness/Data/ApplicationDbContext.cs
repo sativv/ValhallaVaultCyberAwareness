@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using ValhallaVaultCyberAwareness.Models;
 
 namespace ValhallaVaultCyberAwareness.Data
@@ -273,7 +272,7 @@ namespace ValhallaVaultCyberAwareness.Data
                     Id = 8,
                     QuestionId = 3,
                     Text = "Investeringsbedrägeri",
-                    IsCorrectAnswer = false
+                    IsCorrectAnswer = true
 
                 },
                 new AnswerModel()
@@ -349,7 +348,7 @@ namespace ValhallaVaultCyberAwareness.Data
                     Id = 18,
                     QuestionId = 6,
                     Text = "Stänga ner tjänsten tillfälligt",
-                    IsCorrectAnswer = true
+                    IsCorrectAnswer = false
                 },
                 new AnswerModel()
                 {
@@ -376,14 +375,14 @@ namespace ValhallaVaultCyberAwareness.Data
                     Id = 22,
                     QuestionId = 8,
                     Text = "Återgå till kontorsarbete",
-                    IsCorrectAnswer = true
+                    IsCorrectAnswer = false
                 },
                 new AnswerModel()
                 {
                     Id = 23,
                     QuestionId = 8,
                     Text = "Införa striktare lösenordspolicyer och tvåfaktorsautentisering för fjärråtkomst",
-                    IsCorrectAnswer = false
+                    IsCorrectAnswer = true
                 },
                 new AnswerModel()
                 {

@@ -1,11 +1,17 @@
 ﻿@page "/Segment/{Id:int}"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Managers
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
+@inject QuestionManager questionManager
+@inject SignInManager<ApplicationUser> signInManager
+@inject AuthenticationStateProvider authenticationStateProvider
 @* @attribute [Authorize] *@
 
-@if (ChosenCategory == null)
+@if (ChosenSegment == null)
 {
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
         <h1 class="text-white">Loading...</h1>
@@ -13,41 +19,82 @@
 }
 else
 {
-    <div class="container text-white" >
-        <h1 class="text-center">@ChosenCategory.Name</h1>
-
-        @foreach (var segment in Segments)
-        {
-            <div class="card mb-4 text-light bg-dark text-">
-                <div class="card-body">
-                    <h2>@segment.Name</h2>
-                    <p class="mb-2">Some Information About This Segment:</p>
-                    <h3>@segment.InfoText</h3>
-                    <p class="mb-2">The questions in this segment are:</p>
-                    <ul>
-                        @foreach (var question in segment.Questions)
-                        {
-                            <li><a href="/question/@question.Id">@question.Title</a></li>
-                        }
-                    </ul>             
-                </div>
-            </div>
-        }
+    <div class="card mb-4 text-light bg-dark text-">
+        <div class="card-body">
+            <h2>@ChosenSegment.Name</h2>
+            <p class="mb-2">Some Information About This Segment:</p>
+            <h3>@ChosenSegment.InfoText</h3>
+            <p class="mb-2">The questions in this segment are:</p>
+            <ul>
+                @foreach (var question in questions)
+                {
+                    <li><a href="/question/@question.Id" class="@((question.IsAnsweredCorrectly) ? "text-success" : "text-danger")">@question.Title</a></li>
+                }
+            </ul>             
+        </div>
     </div>
 }
+@if(completionPercentage != null)
+{
+    <h5>Completion: @completionPercentage%</h5>
+}
+
+
+<a href="/home" class="btn btn-lg buttonBorder">Go back</a>
 
 
 @code {
     [Parameter]
     public int Id { get; set; }
     public SegmentModel? ChosenSegment { get; set; }
-    public CategoryModel? ChosenCategory { get; set; }
-    public List<SegmentModel>? Segments { get; set; }
+    private List<QuestionViewModel> questions = new();
+    private bool questionAnsweredCorrectly;
+    private double? completionPercentage;
+
+    private ApplicationUser? signedInUser;
+    private AuthenticationState authenticationState;
 
     protected override async Task OnParametersSetAsync()
     {
+        authenticationState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (authenticationState.User.Identity.IsAuthenticated)
+        {
+            signedInUser = await signInManager.UserManager.GetUserAsync(authenticationState.User);
+        }
+
         ChosenSegment = await uow.SegmentRepo.GetByIdAsync(Id);
-        ChosenCategory = await uow.CategoryRepo.GetByIdAsync(ChosenSegment.CategoryId);
-        Segments = await uow.SegmentRepo.GetSegmentsInCategoryAsync(ChosenSegment.CategoryId);
+
+        //Gör ViewModel som innehåller användarens progress så man kan displaya röd eller grön text.
+        foreach(var question in ChosenSegment.Questions)
+        {
+            QuestionViewModel newQuestion = new()
+            {
+                Id = question.Id,
+                Title = question.Title,
+            };
+            try
+            {
+                //Kollar vad användaren har svarat
+                newQuestion.IsAnsweredCorrectly = await questionManager.QuestionAnsweredCorrectly(question.Id, signedInUser);
+            }
+            catch
+            {
+                //Användaren har inte svarat på frågan
+                newQuestion.IsAnsweredCorrectly = false;
+            }
+
+            questions.Add(newQuestion);
+        }
+        try
+        {
+            //Räknar ut användarens svarsprocent
+            completionPercentage = await questionManager.CalculateCorrectPercentage(ChosenSegment.Id, signedInUser);
+        }
+        catch
+        {
+            //Har inte svarat på frågorna än eller så finns det inga frågor i segmentet
+        }
+
     }
+    
 }
