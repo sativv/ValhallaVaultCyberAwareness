@@ -1,34 +1,30 @@
-﻿@implements IDisposable
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc
+@using ValhallaVaultCyberAwareness.Data
+@implements IDisposable
 
 @inject NavigationManager NavigationManager 
 
-<div class="top-row ps-3 navbar ">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">ValhallaVaultCyberAwareness</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            
+            <NavLink class="nav-link btnhome" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="auth">
+                    <span class="bi bi-lock-nav-menu align-content-center" aria-hidden="true"></span> Admin Page
+                </NavLink>
+            </div>
         </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
-
-        <AuthorizeView>
+    </div>
+    <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span>@context.User.Identity?.Name
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
@@ -54,16 +50,17 @@
                 </div>
             </NotAuthorized>
         </AuthorizeView>
-    </nav>
-</div>
+</nav>
 
 @code {
     private string? currentUrl;
+  
 
     protected override void OnInitialized()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
