@@ -1,0 +1,83 @@
+﻿@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Managers
+@using ValhallaVaultCyberAwareness.Models
+@using Microsoft.JSInterop
+@using ValhallaVaultCyberAwareness.Repository
+@rendermode InteractiveServer
+@inject ValhallaUow uow
+@inject NavigationManager NavigationManager
+@inject ProgressManager progressManager
+
+@if(IsAvailable)
+{
+    <button class="btn buttonBorder mb-2 " @onclick="ToggleCollapse">
+        <h4>@SubCategory.Title</h4>
+    </button>
+
+
+    <div class="@(IsCollapsed ? "" : "collapse")" id="@($"collapse-{SubCategory.Id}")">
+        <div class="card bg-dark text-light" style="border:none !important;">
+            <div class="card-body">
+                @if (Questions != null && Questions.Any())
+                {
+                    <div class="d-flex flex-column align-items-center">
+                        @foreach (var question in Questions)
+                        {
+                            @* segment.IsAvailable finns på SegmentViewModels och visar om användaren har tillgång till segmentet *@
+                            <button @onclick="(() => NavigateToQuestion(question))" class="btn btn-lg mt-1 text-light @(question.IsAnsweredCorrectly ? "bg-success" : "bg-danger")" style="border:1px solid #0d5959; border-radius:0; width:80%">@question.Title</button>
+
+                        }
+                    </div>
+
+                }
+                else if (IsCollapsed && Questions == null)
+                {
+                    <p>Loading...</p>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <button class="btn buttonBorder mb-2 text-danger">
+        <h4>@SubCategory.Title</h4>
+    </button>
+}
+
+
+
+@code {
+    [Parameter]
+    public SubCategoryViewModel? SubCategory { get; set; }
+    [Parameter]
+    public ApplicationUser? SignedInUser { get; set; }
+    [Parameter]
+    public bool IsAvailable { get; set; }
+
+
+    private bool IsCollapsed { get; set; } = false;
+
+    private List<QuestionViewModel>? Questions { get; set; } = null!;
+
+    private async Task ToggleCollapse()
+    {
+        IsCollapsed = !IsCollapsed;
+
+        if (IsCollapsed && Questions == null)
+        {
+            Questions = await progressManager.GetQuestionProgressInSubCategoryAsync(SignedInUser, SubCategory.Id);
+        }
+    }
+
+    private void NavigateToQuestion(QuestionViewModel question)
+    {
+        NavigationManager.NavigateTo($"/Question/{question.Id}");
+    }
+
+
+}
+
+
+
+

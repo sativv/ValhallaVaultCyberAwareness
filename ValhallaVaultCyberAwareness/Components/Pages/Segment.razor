@@ -1,12 +1,14 @@
 ﻿@page "/Segment/{Id:int}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwareness.Components.BComponents
 @using ValhallaVaultCyberAwareness.Data
 @using ValhallaVaultCyberAwareness.Managers
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
 @inject QuestionManager questionManager
+@inject ProgressManager progressManager
 @inject SignInManager<ApplicationUser> signInManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @attribute [Authorize]
@@ -29,8 +31,7 @@ else
             <ul class="list-group w-50 text-center">
                 @foreach(var subcategory in subCategories)
                 {
-                    <button class="btn buttonBorder mt-4" @onclick="ToggleCollapse">@subcategory.Title</button>
-                    @* Den här IsCollapsed funkar inte som jag vill. Göra en separat komponent av den kanske? *@
+                    @* <button class="btn buttonBorder mt-4 @(subcategory.IsAvailable ? "text-light" : "text-danger")" @onclick="ToggleCollapse">@subcategory.Title</button>
                     <div class="@(IsCollapsed? "" : "")">
                         <div class="card bg-dark text-light" style="border:none;">
                             <div class="card-body">
@@ -42,7 +43,9 @@ else
                                 }
                             </div>
                         </div>
-                    </div>
+                    </div> *@
+
+                    <SubCategoryComponent SubCategory="subcategory" SignedInUser="signedInUser" IsAvailable="subcategory.IsAvailable"></SubCategoryComponent>
                 }
              </ul>
         </div>
@@ -62,7 +65,7 @@ else
     [Parameter]
     public int Id { get; set; }
     public SegmentModel? ChosenSegment { get; set; }
-    private List<SubCategoryModel> subCategories = new();
+    private List<SubCategoryViewModel> subCategories = new();
     private List<QuestionViewModel> questions = new();
     private bool questionAnsweredCorrectly;
     private double? completionPercentage;
@@ -81,29 +84,8 @@ else
 
         ChosenSegment = await uow.SegmentRepo.GetByIdAsync(Id);
 
-        subCategories = await uow.SubcategoryRepo.GetSubcategoriesInSegment(Id);
+        subCategories = await progressManager.GetSubCategoryProgressInSegmentAsync(signedInUser, Id);
 
-        //Gör ViewModel som innehåller användarens progress så man kan displaya röd eller grön text.
-        // foreach (var question in ChosenSegment.Questions)
-        // {
-        //     QuestionViewModel newQuestion = new()
-        //         {
-        //             Id = question.Id,
-        //             Title = question.Title,
-        //         };
-        //     try
-        //     {
-        //         //Kollar vad användaren har svarat
-        //         newQuestion.IsAnsweredCorrectly = await questionManager.QuestionAnsweredCorrectly(question.Id, signedInUser);
-        //     }
-        //     catch
-        //     {
-        //         //Användaren har inte svarat på frågan
-        //         newQuestion.IsAnsweredCorrectly = false;
-        //     }
-
-        //     questions.Add(newQuestion);
-        // }
         try
         {
             //Räknar ut användarens svarsprocent
