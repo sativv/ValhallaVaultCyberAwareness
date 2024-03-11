@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValhallaVaultCyberAwareness.Data;
 
@@ -11,9 +12,11 @@ using ValhallaVaultCyberAwareness.Data;
 namespace ValhallaVaultCyberAwareness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240311095907_changeDbStructure")]
+    partial class changeDbStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -797,7 +800,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Banker och andra finansiella institutioner begär aldrig känslig information såsom kontonummer eller lösenord via telefon. Detta är ett klassiskt tecken på telefonbedrägeri.",
                             SubCategoryId = 1,
                             Text = "Du får ett oväntat telefonsamtal från någon som påstår sig vara från din bank. Personen ber dig bekräfta ditt kontonummer och lösenord för att \"säkerställa din kontos säkerhet\" efter en påstådd säkerhetsincident. Hur bör du tolka denna situation?",
-                            Title = "Oväntat telefonsamtal"
+                            Title = "Kreditkortsbedrägeri"
                         },
                         new
                         {
@@ -805,7 +808,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Begäran om pengar, särskilt under omständigheter där två personer aldrig har träffats fysiskt, är ett vanligt tecken på romansbedrägeri.",
                             SubCategoryId = 2,
                             Text = "Efter flera månader av daglig kommunikation med någon du träffade på en datingsida, börjar personen berätta om en plötslig finansiell kris och ber om din hjälp genom att överföra pengar. Vad indikerar detta mest sannolikt?",
-                            Title = "Begäran om pengar från datingsida"
+                            Title = "Romansbedrägeri"
                         },
                         new
                         {
@@ -813,7 +816,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Erbjudanden som lovar hög avkastning med liten eller ingen risk, särskilt via oönskade e-postmeddelanden, är ofta tecken på investeringsbedrägerier",
                             SubCategoryId = 3,
                             Text = "Du får ett e-postmeddelande/samtal om ett exklusivt erbjudande att investera i ett startup-företag som påstås ha en revolutionerande ny teknologi, med garantier om exceptionellt hög avkastning på mycket kort tid. Hur bör du förhålla dig till erbjudandet?",
-                            Title = "Exklusivt investeringserbjudande"
+                            Title = "Investeringsbedrägeri"
                         },
                         new
                         {
@@ -821,7 +824,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Oidentifierade transaktioner på ditt kreditkortsutdrag är en stark indikation på att ditt kortnummer har komprometterats och använts för obehöriga köp, vilket är typiskt för kreditkortsbedrägeri",
                             SubCategoryId = 4,
                             Text = "Efter en online-shoppingrunda märker du oidentifierade transaktioner på ditt kreditkortsutdrag från företag du aldrig handlat från. Vad indikerar detta mest sannolikt?",
-                            Title = "Oidentifierade transaktioner"
+                            Title = "Telefonbedrägeri"
                         },
                         new
                         {
@@ -829,7 +832,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Utbildning i digital säkerhet är avgörande för att hjälpa anställda att känna igen och undvika säkerhetshot som phishing, vilket är en vanlig attackvektor.",
                             SubCategoryId = 12,
                             Text = "Inom företaget märker man att konfidentiella dokument regelbundet läcker ut till konkurrenter. Efter en intern granskning upptäcks det att en anställd omedvetet har installerat skadlig programvara genom att klicka på en länk i ett phishing-e-postmeddelande. Vilken åtgärd bör prioriteras för att förhindra framtida incidenter?",
-                            Title = "Konfidentiella dokument läcker till konkurrenter"
+                            Title = "Digital säkerhet på företag"
                         },
                         new
                         {
@@ -837,7 +840,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Transparent kommunikation och rådgivning om tillfälliga åtgärder är avgörande för att skydda användarna medan en permanent lösning utvecklas.",
                             SubCategoryId = 13,
                             Text = "Inom företaget upptäckts det en sårbarhet i vår programvara som kunde möjliggöra obehörig åtkomst till användardata. Företaget har inte omedelbart en lösning. Vilken är den mest lämpliga första åtgärden?",
-                            Title = "Sårbarhet i programvara"
+                            Title = "Risker och beredskap"
                         },
                         new
                         {
@@ -845,7 +848,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "DDoS-attacker kräver ofta betydande resurser och koordinering, vilket är karakteristiskt för organiserade cyberbrottsliga grupper.",
                             SubCategoryId = 14,
                             Text = "Vårt företag blir måltavla för en DDoS-attack som överväldigar våra servers och gör våra tjänster otillgängliga för kunder. Vilken typ av aktör är mest sannolikt ansvarig för denna typ av attack?",
-                            Title = "DDoS-attack"
+                            Title = "Aktörer inom cyberbrott"
                         },
                         new
                         {
@@ -853,7 +856,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = " Stärkt autentisering är kritisk för att säkra fjärråtkomst och skydda mot obehörig åtkomst i en distribuerad arbetsmiljö.",
                             SubCategoryId = 15,
                             Text = "Med övergången till distansarbete upptäcker vårt företag en ökning av säkerhetsincidenter, inklusive obehörig åtkomst till företagsdata. Vilken åtgärd bör företaget vidta för att adressera denna nya riskmiljö?",
-                            Title = "Ökning av säkerhetsincidenter vid distansarbete"
+                            Title = "Ökad digital närvaro och distansarbete"
                         },
                         new
                         {
@@ -861,7 +864,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Ransomware-angrepp involverar kryptering av offerdata och kräver lösen för dekryptering, vilket är särskilt skadligt för kritiska sektorer som hälsovård.",
                             SubCategoryId = 16,
                             Text = "Hälsovårdsmyndigheten utsätts för ett cyberangrepp som krypterar patientdata och kräver lösen för att återställa åtkomsten. Vilken typ av angrepp har de sannolikt blivit utsatta för?",
-                            Title = "Cyberangrepp som krypterar patientdata"
+                            Title = "Cyberangrepp mot känsliga sektorer"
                         },
                         new
                         {
@@ -869,7 +872,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Maersk utsattes för NotPetya ransomware-angreppet, som ledde till omfattande störningar och förluster genom att kryptera företagets globala system. Maersk rapporterade att företaget led ekonomiska förluster på grund av NotPetya ransomware-angreppet som uppskattades till cirka 300 miljoner USD. Denna siffra reflekterar de omfattande kostnaderna för störningar i deras globala verksamheter, återställande av system och data, samt förlust av affärer under tiden systemen var nere. NotPetya-angreppet anses vara ett av de mest kostsamma cyberangreppen mot ett enskilt företag och tjänar som en kraftfull påminnelse om de potentiella konsekvenserna av cyberhot.",
                             SubCategoryId = 17,
                             Text = "Det globala fraktbolaget Maersk blev offer för ett omfattande cyberangrepp som avsevärt störde deras verksamhet världen över. Vilken typ av malware var primärt ansvarig för denna incident?",
-                            Title = "Maersk"
+                            Title = "Cyberrånet mot Mersk"
                         },
                         new
                         {
@@ -877,7 +880,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = " Cyberspionage avser aktiviteter där aktörer, ofta statliga, engagerar sig i övervakning och datainsamling genom cybermedel för att erhålla hemlig information utan målets medgivande, typiskt för politiska, militära eller ekonomiska fördelar.",
                             SubCategoryId = 36,
                             Text = "Regeringen upptäcker att känslig politisk kommunikation har läckt och misstänker elektronisk övervakning. Vilket fenomen beskriver bäst denna situation?",
-                            Title = "Känslig politisk kommunikation har läckt"
+                            Title = "Allmänt om cyberspionage"
                         },
                         new
                         {
@@ -885,7 +888,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Riktade cyberattacker som utnyttjar noll-dagars Zero-day sårbarheter är en avancerad metod för cyberspionage där angriparen specifikt riktar in sig på ett mål för att komma åt känslig information eller data genom att utnyttja tidigare okända sårbarheter i programvara.",
                             SubCategoryId = 37,
                             Text = "Regeringen blir varse om en sofistikerad skadeprogramskampanj som utnyttjar Zero-day sårbarheter för att infiltrera deras nätverk och stjäla oerhört viktig data. Vilken metod för cyberspionage används sannolikt här?",
-                            Title = "Skadeprogramskampanj"
+                            Title = "Metoder för cyberspionage"
                         },
                         new
                         {
@@ -893,7 +896,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Säkerhetsskyddslagen är en svensk lagstiftning som syftar till att skydda nationellt känslig information från spioneri, sabotage, terroristbrott och andra säkerhetshot. Lagen ställer krav på säkerhetsskyddsåtgärder för verksamheter av betydelse för Sveriges säkerhet.",
                             SubCategoryId = 38,
                             Text = "Regeringen i Sverige ökar sitt interna säkerhetsprotokoll för att skydda sig mot utländska underrättelsetjänsters infiltration. Vilken lagstiftning ger ramverket för detta skydd?",
-                            Title = "Interna säkerhetsprotokoll"
+                            Title = "Säkerhetsskyddslagen"
                         },
                         new
                         {
@@ -901,7 +904,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Lunds universitet upptäcker att forskningsdata om ny teknologi har stulits. Undersökningar tyder på en välorganiserad grupp med kopplingar till en utländsk stat. Vilken typ av aktör ligger sannolikt bakom detta?",
                             SubCategoryId = 39,
                             Text = "Statssponsrade hackers är aktörer som arbetar på uppdrag av eller med stöd från en regering för att genomföra cyberspionage, ofta riktat mot utländska intressen, organisationer eller regeringar för att få strategiska fördelar.",
-                            Title = "Statssponsrade hackers"
+                            Title = "Cyberspionagets aktörer"
                         },
                         new
                         {
@@ -909,7 +912,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Det säkraste sättet att hantera potentiella telefonbedrägerier är att avsluta samtalet och sedan själv ringa upp din bank via ett telefonnummer du vet är korrekt (till exempel från deras officiella webbplats eller ditt bankkort) för att verifiera om samtalet var legitimt.",
                             SubCategoryId = 1,
                             Text = "Vad bör du göra omedelbart efter att ha mottagit ett misstänkt telefonsamtal där någon frågar efter personlig finansiell information?",
-                            Title = "Någon efterfrågar personlig finansiell information"
+                            Title = "Kreditkortsbedrägeri"
                         },
                         new
                         {
@@ -917,7 +920,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Kommunikationen från banker och finansiella institutioner innehåller aldrig förfrågningar om känslig information som lösenord eller kontonummer via osäkra kanaler som telefon eller e-post. Detta är en grundläggande säkerhetsprincip.",
                             SubCategoryId = 1,
                             Text = "Vilket av följande påståenden är sant angående hur finansiella institutioner kommunicerar med sina kunder?",
-                            Title = "Hur kommunicerar finansiella institutioner"
+                            Title = "Kreditkortsbedrägeri"
                         },
                         new
                         {
@@ -925,7 +928,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Genom att ha förutbestämda säkerhetsfrågor med din bank kan du och banken ha en säker metod för att bekräfta varandras identitet under telefonsamtal. Detta minskar risken för att bli lurad av bedragare som inte kan svara på dessa frågor.",
                             SubCategoryId = 1,
                             Text = "Hur kan du bäst skydda dig mot telefonbedrägerier?",
-                            Title = "Skydda dig mot telefonbedrägeri"
+                            Title = "Kreditkortsbedrägeri"
                         },
                         new
                         {
@@ -933,7 +936,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "En automatisk policy för lösenordsändring tvingar fram regelbundna uppdateringar och säkerställer att lösenorden hålls starka och svåra att knäcka, vilket minskar risken för obehörig åtkomst.",
                             SubCategoryId = 12,
                             Text = "Vilken åtgärd är mest effektiv för att säkerställa att anställda regelbundet uppdaterar sina lösenord till starkare och mer komplexa versioner?",
-                            Title = "Säkerställa anställdas ansvar"
+                            Title = "Digital säkerhet på företag"
                         },
                         new
                         {
@@ -941,7 +944,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Genom att använda VPN kan anställda säkert ansluta till företagets nätverk även från otrygga Wi-Fi-nätverk, vilket krypterar dataöverföring och skyddar mot avlyssning och andra cyberhot.",
                             SubCategoryId = 12,
                             Text = "Hur kan företaget effektivt minska risken för att anställda oavsiktligt exponerar företagsdata via otrygga Wi-Fi-nätverk?",
-                            Title = "Otrygga Wi-Fi-nätvärk"
+                            Title = "Digital säkerhet på företag"
                         },
                         new
                         {
@@ -949,7 +952,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Avancerade e-postsäkerhetslösningar kan effektivt identifiera och blockera skadlig programvara och phishing-försök, vilket minskar risken för att anställda oavsiktligt exponerar företagets system och data för cyberhot.",
                             SubCategoryId = 12,
                             Text = "Vilken åtgärd bör ett företag ta för att skydda sig mot intrång via e-postbaserade hot som phishing?",
-                            Title = "Åtgärd mot e-postbaserade intrång"
+                            Title = "Digital säkerhet på företag"
                         },
                         new
                         {
@@ -957,7 +960,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Kryptering är en kraftfull metod för att skydda känslig information under överföring och lagring, vilket gör det extremt svårt för obehöriga att få tillgång till och förstå informationen, även om de lyckas avlyssna kommunikationen.\nInsiderhot är en av de svåraste säkerhetsutmaningarna att identifiera och förebygga. Dessa hot kan komma från anställda som, oavsett om det är avsiktligt eller oavsiktligt, läcker känslig information som kan utnyttjas för cyberspionage. Att använda avancerade verktyg för beteendeanalys och anomalidetektering kan ge tidiga varningar om potentiella säkerhetsbrott.",
                             SubCategoryId = 36,
                             Text = "Vilken försvarsstrategi är mest effektiv mot cyberspionage som riktar sig mot känslig kommunikation?",
-                            Title = "Mest effektiva försvarsstrategi"
+                            Title = "Allmänt om cyberspionage"
                         },
                         new
                         {
@@ -965,7 +968,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Program för beteendeanalys och anomalidetektering kan effektivt identifiera ovanligt beteende eller aktiviteter som kan tyda på insiderhot eller obehörig åtkomst till känslig information, vilket är ett kritiskt steg för att förhindra cyberspionage.\nMjukvarusårbarheter är ofta den svaga länken som utnyttjas i cyberspionageattacker. Utan snabba och regelbundna säkerhetsuppdateringar och patchar, kan dessa sårbarheter lämna dörrarna vidöppna för angripare. Att hålla programvara och system uppdaterade är en grundläggande men kritisk del av ett effektivt cybersäkerhetsförsvar.",
                             SubCategoryId = 36,
                             Text = "Hur kan organisationer bäst upptäcka och motverka insiderhot som bidrar till cyberspionage?",
-                            Title = "Upptäck och motverka insiderhot"
+                            Title = "Allmänt om cyberspionage"
                         },
                         new
                         {
@@ -973,7 +976,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
                             ExplanationText = "Regelbundna uppdateringar och patchning av mjukvara och operativsystem är avgörande för att stänga säkerhetshål som annars kan utnyttjas av cyberspioner. Detta minskar risken för intrång och dataläckor avsevärt.",
                             SubCategoryId = 36,
                             Text = "Vilken åtgärd är viktigast för att skydda sig mot cyberspionage genom utnyttjande av mjukvarusårbarheter?",
-                            Title = "Skydd mot cyberspionage"
+                            Title = "Allmänt om cyberspionage"
                         });
                 });
 

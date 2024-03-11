@@ -9,8 +9,6 @@
 @* Följande två rader för att komma åt användaren *@
 @inject SignInManager<ApplicationUser> signInManager
 @inject AuthenticationStateProvider authenticationStateProvider
-
-
 @rendermode InteractiveServer
 
 <h3>Hej Otto! Ha så kul</h3>
@@ -28,6 +26,7 @@ else
 
 @code {
 	private double correctPercentage;
+
 	//Följande två rader för att komma åt användaren
 	private ApplicationUser? signedInUser;
 	private AuthenticationState authenticationState;

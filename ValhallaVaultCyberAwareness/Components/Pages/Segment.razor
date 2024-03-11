@@ -1,15 +1,17 @@
 ﻿@page "/Segment/{Id:int}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwareness.Components.BComponents
 @using ValhallaVaultCyberAwareness.Data
 @using ValhallaVaultCyberAwareness.Managers
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
 @inject QuestionManager questionManager
+@inject ProgressManager progressManager
 @inject SignInManager<ApplicationUser> signInManager
 @inject AuthenticationStateProvider authenticationStateProvider
-@* @attribute [Authorize] *@
+@attribute [Authorize]
 
 @if (ChosenSegment == null)
 {
@@ -27,24 +29,23 @@ else
             <h3 style="color:#21e8ef">@ChosenSegment.InfoText</h3>
          
             <ul class="list-group w-50 text-center">
-                @foreach(var question in questions)
+                @foreach(var subcategory in subCategories)
                 {
+                    @* <button class="btn buttonBorder mt-4 @(subcategory.IsAvailable ? "text-light" : "text-danger")" @onclick="ToggleCollapse">@subcategory.Title</button>
+                    <div class="@(IsCollapsed? "" : "")">
+                        <div class="card bg-dark text-light" style="border:none;">
+                            <div class="card-body">
+                                @for(int i=0; i < subcategory.Questions.Count(); i++)
+                                {
+                                    <div class="mt-2 ">
+                                        <a class="btn btn-lg buttonBorder" href="/question/@subcategory.Questions[i].Id">Question: @(i+1)</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div> *@
 
-                    @if (question.IsAnsweredCorrectly)
-                    {
-                        <div class="mb-3">
-                          <li class="list-group-item bg-dark buttonBorder"><a href="/question/@question.Id" style="color:#21e8ef">@question.Title</a></li>
-                        <span>Done</span>
-                        </div>
-                        
-                    }
-                    else
-                    {
-                        <div class="mb-3">
-                            <li class="list-group-item bg-dark buttonBorder"><a href="/question/@question.Id" style="color:#21e8ef">@question.Title</a></li>
-                        </div>
-                    }
-                    
+                    <SubCategoryComponent SubCategory="subcategory" SignedInUser="signedInUser" IsAvailable="subcategory.IsAvailable"></SubCategoryComponent>
                 }
              </ul>
         </div>
@@ -64,9 +65,11 @@ else
     [Parameter]
     public int Id { get; set; }
     public SegmentModel? ChosenSegment { get; set; }
+    private List<SubCategoryViewModel> subCategories = new();
     private List<QuestionViewModel> questions = new();
     private bool questionAnsweredCorrectly;
     private double? completionPercentage;
+    private bool IsCollapsed { get; set; } = false;
 
     private ApplicationUser? signedInUser;
     private AuthenticationState authenticationState;
@@ -81,36 +84,23 @@ else
 
         ChosenSegment = await uow.SegmentRepo.GetByIdAsync(Id);
 
-        //Gör ViewModel som innehåller användarens progress så man kan displaya röd eller grön text.
-        foreach (var question in ChosenSegment.Questions)
-        {
-            QuestionViewModel newQuestion = new()
-                {
-                    Id = question.Id,
-                    Title = question.Title,
-                };
-            try
-            {
-                //Kollar vad användaren har svarat
-                newQuestion.IsAnsweredCorrectly = await questionManager.QuestionAnsweredCorrectly(question.Id, signedInUser);
-            }
-            catch
-            {
-                //Användaren har inte svarat på frågan
-                newQuestion.IsAnsweredCorrectly = false;
-            }
+        subCategories = await progressManager.GetSubCategoryProgressInSegmentAsync(signedInUser, Id);
 
-            questions.Add(newQuestion);
-        }
         try
         {
             //Räknar ut användarens svarsprocent
-            completionPercentage = await questionManager.CalculateCorrectPercentage(ChosenSegment.Id, signedInUser);
+            completionPercentage = await questionManager.CalculatePercentageInSegment(ChosenSegment.Id, signedInUser);
         }
         catch
         {
             //Har inte svarat på frågorna än eller så finns det inga frågor i segmentet
         }
+
+    }
+
+    private async Task ToggleCollapse()
+    {
+        IsCollapsed = !IsCollapsed;
 
     }
 

@@ -265,7 +265,7 @@ else
                 {
                     Title = questionTitle,
                     ExplanationText = questionExplanationText,
-                    SegmentId = questionSegmentId.Value,
+                    SubCategoryId = questionSegmentId.Value,
                     Text = questionText
                 };
             await uow.QuestionRepo.AddAsync(questionToAdd);

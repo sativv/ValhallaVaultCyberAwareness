@@ -42,11 +42,18 @@ namespace ValhallaVaultCyberAwareness.Managers
         /// <summary>
         /// Räknar ut hur många procent rätt man har.
         /// </summary>
-        /// <param name="segmentId">Id för subkategorin alla frågor ingår i</param>
+        /// <param name="subCategoryId">Id för subkategorin alla frågor ingår i</param>
         /// <param name="user"></param>
         /// <returns>Antal procentenheter, alltså inte 0.8 utan 80%</returns>
         /// <exception cref="Exception"></exception>
-        public async Task<double> CalculateCorrectPercentage(int segmentId, ApplicationUser user)
+        public async Task<double> CalculateCorrectPercentage(int subCategoryId, ApplicationUser user)
+        {
+            List<QuestionModel> questions = await uow.QuestionRepo.GetQuestionsInSubCategoryAsnyc(subCategoryId);
+
+            return await CalculateCorrectPercentage(questions, user);
+        }
+
+        public async Task<double> CalculatePercentageInSegment(int segmentId, ApplicationUser user)
         {
             List<QuestionModel> questions = await uow.QuestionRepo.GetQuestionsInSegmentAsnyc(segmentId);
 
@@ -110,20 +117,20 @@ namespace ValhallaVaultCyberAwareness.Managers
 
             if (currentQuestion == null) throw new Exception();
 
-            SegmentModel? currentSegment = await uow.SegmentRepo.GetByIdAsync(currentQuestion.SegmentId);
+            SubCategoryModel? currentSubCategory = await uow.SubcategoryRepo.GetByIdAsync(currentQuestion.SubCategoryId);
 
-            if (currentSegment == null) throw new Exception();
+            if (currentSubCategory == null) throw new Exception();
 
-            int indexOfQuestion = currentSegment.Questions.IndexOf(currentQuestion);
+            int indexOfQuestion = currentSubCategory.Questions.IndexOf(currentQuestion);
 
-            if (indexOfQuestion == currentSegment.Questions.Count() - 1)
+            if (indexOfQuestion == currentSubCategory.Questions.Count() - 1)
             {
                 //Last question. Return something here
                 return 0;
             }
             else
             {
-                QuestionModel nextQuestion = currentSegment.Questions[indexOfQuestion + 1];
+                QuestionModel nextQuestion = currentSubCategory.Questions[indexOfQuestion + 1];
                 return nextQuestion.Id;
             }
         }

@@ -22,7 +22,7 @@
 					
 					@* 3 divs för att få en knapp till vänster men rubriken i mitten *@
 					<div class="row mb-3">
-						<div class="col-2"><a class="btn btn-lg buttonBorder align-self-center" href="/segment/@question.SegmentId">Tillbaka</a></div>
+						<div class="col-2"><a class="btn btn-lg buttonBorder align-self-center" href="/segment/@question.SubCategory.SegmentId">Tillbaka</a></div>
 						<div class="col-8"><h1 style="color:#21e8ef" class="align-self-center p-0">@question.Title</h1></div>
 						<div class="col-2"></div>
 					</div>
@@ -58,8 +58,8 @@
 						}
 						else
 						{
-							<h3 style="color:#21e8ef" class="mt-4">Du fick @correctPercentage% rätt i detta segment!</h3>
-							<a class="btn btn-lg buttonBorder w-50 mt-4 align-self-center" href="/segment/@question.SegmentId">Gå till summering</a>
+							<h3 style="color:#21e8ef" class="mt-4">Du fick @correctPercentage% rätt i denna subkategori!</h3>
+							<a class="btn btn-lg buttonBorder w-50 mt-4 align-self-center" href="/segment/@question.SubCategory.SegmentId">Gå till summering</a>
 						}
 					}
 				</div>
@@ -116,7 +116,7 @@
 		//Om det var sista frågan i segmentet räknas procenten ut
 		if(nextQuestionId == 0)
 		{
-			correctPercentage = await questionManager.CalculateCorrectPercentage(question.SegmentId, signedInUser);
+			correctPercentage = await questionManager.CalculateCorrectPercentage(question.SubCategoryId, signedInUser);
 		}
 	}
 
