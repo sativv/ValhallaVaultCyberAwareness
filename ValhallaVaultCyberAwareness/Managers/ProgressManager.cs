@@ -41,7 +41,7 @@ namespace ValhallaVaultCyberAwareness.Managers
 
                 try
                 {
-                    newSegment.SegmentProgress = await questionManager.CalculateCorrectPercentage(segment.Id, user);
+                    newSegment.SegmentProgress = await questionManager.CalculatePercentageInSegment(segment.Id, user);
                     if (newSegment.SegmentProgress < percentageThreshold)
                     {
                         nextSegmentAvailable = false;
@@ -111,6 +111,13 @@ namespace ValhallaVaultCyberAwareness.Managers
             return subcategoryViews;
         }
 
+        /// <summary>
+        /// Hämtar userns progression i en subkategori. Returnar QuestionViewModel som innehåller saker vi kan 
+        /// använda oss av i UI, så som IsAnsweredCorrectly.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="categoryId"></param>
+        /// <returns>Lista av SubCategoryViewModel</returns>
         public async Task<List<QuestionViewModel>> GetQuestionProgressInSubCategoryAsync(ApplicationUser user, int subcategoryId)
         {
             List<QuestionModel> allQuestionsInSubCategory = await uow.QuestionRepo.GetQuestionsInSubCategoryAsnyc(subcategoryId);

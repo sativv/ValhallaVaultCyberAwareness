@@ -89,7 +89,7 @@ else
         try
         {
             //Räknar ut användarens svarsprocent
-            completionPercentage = await questionManager.CalculateCorrectPercentage(ChosenSegment.Id, signedInUser);
+            completionPercentage = await questionManager.CalculatePercentageInSegment(ChosenSegment.Id, signedInUser);
         }
         catch
         {

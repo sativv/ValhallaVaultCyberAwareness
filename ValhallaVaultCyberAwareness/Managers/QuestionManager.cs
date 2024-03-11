@@ -53,6 +53,13 @@ namespace ValhallaVaultCyberAwareness.Managers
             return await CalculateCorrectPercentage(questions, user);
         }
 
+        public async Task<double> CalculatePercentageInSegment(int segmentId, ApplicationUser user)
+        {
+            List<QuestionModel> questions = await uow.QuestionRepo.GetQuestionsInSegmentAsnyc(segmentId);
+
+            return await CalculateCorrectPercentage(questions, user);
+        }
+
         /// <summary>
         /// Sparar svaret användaren gör i databasen. Om användaren redan har svarat på frågan skrivs det gamla svaret över med det nya
         /// </summary>
