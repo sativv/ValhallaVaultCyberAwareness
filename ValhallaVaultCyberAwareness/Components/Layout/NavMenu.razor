@@ -5,26 +5,33 @@
 
 @inject NavigationManager NavigationManager 
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4" style="border-bottom:1px solid #0d5959">
     <div class="container-fluid">
        
         <div class="collapse navbar-collapse" id="navbarCollapse">
             
-            <NavLink class="nav-link btnhome" href="/home" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            <NavLink class="nav-link btnhome text-white" href="/home" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>
             </NavLink>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="auth">
-                    <span class="bi bi-lock-nav-menu align-content-center" aria-hidden="true"></span> Admin Page
-                </NavLink>
-            </div>
+            <AuthorizeView Roles="Admin">
+                <div class=" px-3 d-flex">
+                    <div class="nav-item">
+                        <NavLink class="nav-link" href="/admin">
+                            <span class="bi bi-lock-nav-menu align-content-center" aria-hidden="true"></span> Admin
+                        </NavLink>
+                    </div>
+            
+                </div>
+               
+            </AuthorizeView>
+
         </div>
     </div>
     <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span>@context.User.Identity?.Name
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span>Account
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">

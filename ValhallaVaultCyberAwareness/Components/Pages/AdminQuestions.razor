@@ -1,0 +1,27 @@
+﻿@page "/AdminQ/{Id:int}"
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+
+
+
+        <h1>@Question.Title</h1>
+        <h3>@Question.Text</h3>
+        
+@foreach(var answer in Answers)
+{
+    <h3>@answer.Text | @(answer.IsCorrectAnswer ? "Correct" : "Incorrect")</h3>
+}
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    QuestionModel Question = new();
+    List<AnswerModel> Answers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Question = await uow.QuestionRepo.GetByIdAsync(Id);
+        Answers = await uow.AnswerRepo.GetAnswersToQuestionsAsync(Id);
+
+    }
+}

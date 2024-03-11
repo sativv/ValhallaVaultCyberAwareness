@@ -7,32 +7,33 @@
 @inject ValhallaUow uow
 @inject NavigationManager NavigationManager
 @inject ProgressManager progressManager
-<p>
-    <button class="btn buttonBorder w-50" type="button" @onclick="ToggleCollapse">
-        @Category.Name
-    </button>
-</p>
-<div class="@(IsCollapsed ? "" : "collapse")" id="@($"collapseExample-{Category.Id}")">
-    <div class="card bg-dark text-light" style="border:none !important;">
-        <div class="card-body">
-            @if (Segments != null && Segments.Any())
-            {   <div class="d-flex flex-column align-items-center">
-                    @foreach (var segment in Segments)
-                    {
-                        @* segment.IsAvailable finns på SegmentViewModels och visar om användaren har tillgång till segmentet *@
-                        <button @onclick="(() => NavigateToSegment(segment))" class=" btn btn-lg mt-1 @(segment.IsAvailable ? "text-light" : "text-danger")" style="border:1px solid #21e8ef; width:50%">@segment.Name</button>
-                        <p>@(segment.IsAvailable ? $"{segment.SegmentProgress}% complete" : "Finish previous segment")</p>
-                    }
-                </div>
+
+        <button class="btn buttonBorder w-50 mb-2 " @onclick="ToggleCollapse">
+        <h4>@Category.Name</h4>
+        </button>
+
+
+    <div class="@(IsCollapsed ? "" : "collapse")" id="@($"collapse-{Category.Id}")">
+        <div class="card bg-dark text-light" style="border:none !important;">
+            <div class="card-body">
+                @if (Segments != null && Segments.Any())
+                {   <div class="d-flex flex-column align-items-center">
+                        @foreach (var segment in Segments)
+                        {
+                            @* segment.IsAvailable finns på SegmentViewModels och visar om användaren har tillgång till segmentet *@
+                        <button @onclick="(() => NavigateToSegment(segment))" class="btn btn-lg mt-1 @(segment.IsAvailable ? "text-light" : "text-danger")" style="border:1px solid #0d5959; border-radius:0; width:52%">@segment.Name | @(segment.IsAvailable ? $"{segment.SegmentProgress}% complete" : "Finish previous segment")</button>
+                      
+                        }
+                    </div>
                 
-            }
-            else if (IsCollapsed && Segments == null)
-            {
-                <p>Loading...</p>
-            }
+                }
+                else if (IsCollapsed && Segments == null)
+                {
+                    <p>Loading...</p>
+                }
+            </div>
         </div>
     </div>
-</div>
 
 
 @code {

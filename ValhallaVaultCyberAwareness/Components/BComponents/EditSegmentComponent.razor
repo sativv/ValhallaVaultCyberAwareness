@@ -1,0 +1,82 @@
+﻿@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@rendermode InteractiveServer
+@inject NavigationManager navManager
+@inject IJSRuntime JSRuntime
+@inject ValhallaUow uow
+
+
+@if (Segments == null || Categories == null)
+{
+    <h1>Loading Segments...</h1>
+}
+else
+{
+    <div class="card bg-dark text-light" style="border:none !important;">
+        <div class="card-header" @onclick="Toggle">
+            <button class="btn btn-lg buttonBorder w-100">Edit / Remove Segments</button>
+        </div>
+        <div class="@(IsCollapsed ? "collapse" : "")">
+            <div class="card-body">
+                <div class="d-flex flex-column align-items-center">
+                    <strong class="mb-1">Which Segment Would You Like to Delete or Edit?</strong>
+                    <select @bind="SegmentToEditOrDelete" class="inputBorder w-100 mb-1">
+                    @foreach (var segment in Segments)
+                    {
+                           var category = Categories.FirstOrDefault(c => c.Id == segment.CategoryId);
+
+                            <option value="@segment.Id" style="background-color:#292b2c">@segment.Name in @category.Name</option>
+                    }
+                    </select>
+                </div>
+                <div class="d-flex mt-1 justify-content-center w-100">
+                    <button class="btn buttonBorder w-50"  style="border:1px solid red"@onclick="() => RemoveSegment(SegmentToEditOrDelete)">Delete</button>
+                    <button class="btn buttonBorder w-50"  style="border:1px solid yellow"@onclick="() => RedirectToEditSegmentPage(SegmentToEditOrDelete)">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<SegmentModel> Segments { get; set; }
+    [Parameter]
+    public List<CategoryModel> Categories { get; set; }
+    private int SegmentToEditOrDelete;
+    private bool IsCollapsed = true;
+
+    private string CollapseClass => IsCollapsed ? "collapse" : "";
+
+    private async void Toggle()
+    {
+        IsCollapsed = !IsCollapsed;
+
+    }
+
+
+    public async Task  RedirectToEditSegmentPage(int id)
+    {
+        if(id != 0)
+        {
+            
+     
+        navManager.NavigateTo($"/AdminS/{id}");
+        }
+    }  
+
+    public async Task RemoveSegment(int id)
+    {
+        if (id != null)
+        {
+            if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to remove this segment?"))
+                return;
+        }
+
+        SegmentModel segmentToRemove = await uow.SegmentRepo.GetByIdAsync(id);
+        uow.SegmentRepo.RemoveByIdAsync(id);
+        Segments.Remove(segmentToRemove);
+        StateHasChanged();
+    }
+
+}

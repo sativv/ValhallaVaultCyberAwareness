@@ -1,0 +1,55 @@
+﻿@page "/AdminC/{Id:int}"
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+@inject NavigationManager navManager
+
+
+@if (Category == null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <div class="d-flex justify-content-center mt-5" style="height: 80vh;">
+        <div class="card bg-dark w-50">
+            <h1 class="text-center mb-5"> Currently Editing Category: @Category.Name </h1>
+
+            <div class="d-flex justify-content-center">
+                <input type="text" class="inputBorder form-control w-75" placeholder="New Category Name" @bind="newCategoryName" />
+            </div>
+            <div class="d-flex justify-content-center">
+                <button class="buttonBorder btn btn-block mt-3 w-50" @onclick="EditCategory"> Submit Change </button>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    private CategoryModel Category { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public string newCategoryName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Category = await uow.CategoryRepo.GetByIdAsync(Id);
+    }
+
+    public async Task EditCategory()
+    {
+        Console.WriteLine("hI");
+        if (!string.IsNullOrEmpty(newCategoryName)){
+            if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to edit this category?"))
+                return;
+
+          await uow.CategoryRepo.EditCategoryAsync(newCategoryName, Id);
+          navManager.NavigateTo("/admin");
+        }
+}
+}
