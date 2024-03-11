@@ -484,9 +484,9 @@ namespace ValhallaVaultCyberAwareness.Data
                 new QuestionModel()
                 {
                     Id = 14,
-                    Title = "Statssponsrade hackers",
-                    ExplanationText = "Lunds universitet upptäcker att forskningsdata om ny teknologi har stulits. Undersökningar tyder på en välorganiserad grupp med kopplingar till en utländsk stat. Vilken typ av aktör ligger sannolikt bakom detta?",
-                    Text = "Statssponsrade hackers är aktörer som arbetar på uppdrag av eller med stöd från en regering för att genomföra cyberspionage, ofta riktat mot utländska intressen, organisationer eller regeringar för att få strategiska fördelar.",
+                    Title = "Forskningsdata om ny teknologi stulen",
+                    ExplanationText = "Statssponsrade hackers är aktörer som arbetar på uppdrag av eller med stöd från en regering för att genomföra cyberspionage, ofta riktat mot utländska intressen, organisationer eller regeringar för att få strategiska fördelar.",
+                    Text = "Lunds universitet upptäcker att forskningsdata om ny teknologi har stulits. Undersökningar tyder på en välorganiserad grupp med kopplingar till en utländsk stat. Vilken typ av aktör ligger sannolikt bakom detta?",
                     SubCategoryId = 39
                 },
                 new QuestionModel()
