@@ -19,41 +19,37 @@
 }
 else
 {
-
-
-    <div class="card bg-dark text-light text-center p-4">
-        <h2 style="color:#21e8ef" class="mb-5">@ChosenSegment.Name</h2>
+     <div class="card bg-dark text-light text-center p-4" >
+          <h2 style="color:#21e8ef" class="mb-5">@ChosenSegment.Name</h2>
         <div class="d-flex flex-column align-items-center">
 
             <p class="mb-2" style="color:#21e8ef">Some Information About This Segment:</p>
             <h3 style="color:#21e8ef">@ChosenSegment.InfoText</h3>
-
+         
             <ul class="list-group w-50 text-center">
-                @foreach (var question in questions)
+                @foreach(var question in questions)
                 {
 
                     @if (question.IsAnsweredCorrectly)
                     {
                         <div class="mb-3">
-                        <li class="list-group-item bg-dark buttonBorder"><a href="/question/@question.Id" style="color:#21e8ef">@question.Title</a></li>
+                          <li class="list-group-item bg-dark buttonBorder"><a href="/question/@question.Id" style="color:#21e8ef">@question.Title</a></li>
                         <span>Done</span>
-                </div>
-
+                        </div>
+                        
                     }
                     else
                     {
-                <div class="mb-3">
-                    <li class="list-group-item bg-dark buttonBorder"><a href="/question/@question.Id" style="color:#21e8ef">@question.Title</a></li>
-                </div>
+                        <div class="mb-3">
+                            <li class="list-group-item bg-dark buttonBorder"><a href="/question/@question.Id" style="color:#21e8ef">@question.Title</a></li>
+                        </div>
                     }
-
+                    
                 }
-        </ul>
-    </div>
-
-
-          </div>
-
+             </ul>
+        </div>
+      </div>
+         
 }
 @if (completionPercentage != null)
 {

@@ -1,4 +1,5 @@
 ﻿@page "/question/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using ValhallaVaultCyberAwareness.Data
 @using ValhallaVaultCyberAwareness.Managers
@@ -9,49 +10,62 @@
 @inject SignInManager<ApplicationUser> signInManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @rendermode InteractiveServer
+@attribute [Authorize]
 
-<h3>Question</h3>
+
 @if(question != null)
-{	
-	
-	
-	<h1>@question.Title</h1>
-	<h3>@question.Text</h3>
-}
-@if(answers != null)
 {
-	@foreach(var answer in answers)
-	{
-		<button class="btn mt-2 @(answer.IsCorrectAnswer ? correctColor : wrongColor)" @onclick="() => Answer(answer.IsCorrectAnswer)">@answer.Text</button>
-		<br />
-	}
-}
-@if(questionIsAnswered)
-{
-	@if(answeredCorrectly)
-	{
-		<h3>You answered correctly!</h3>
-	}
-	else
-	{
-		<h3>Wrong answer!</h3>
-	}
-	<br />
+	<div class="container vh-100 justify-content-center">
+		<div class="row justify-content-center">
+			<div class="col-md-8">
+				<div class="card bg-dark text-light text-center p-4" style="height: 100vh;">
+					
+					@* 3 divs för att få en knapp till vänster men rubriken i mitten *@
+					<div class="row mb-3">
+						<div class="col-2"><a class="btn btn-lg buttonBorder align-self-center" href="/segment/@question.SegmentId">Tillbaka</a></div>
+						<div class="col-8"><h1 style="color:#21e8ef" class="align-self-center p-0">@question.Title</h1></div>
+						<div class="col-2"></div>
+					</div>
+					
+					<h4 style="color:#21e8ef" class="mb-5">@question.Text</h4>
+					@if(answers != null)
+					{
+						<div class="d-flex flex-column align-items-center">
+							@foreach (var answer in answers)
+							{
+								<button class="btn btn-lg buttonBorder mb-4 w-50 @(answer.IsCorrectAnswer ? correctColor : wrongColor)" @onclick="() => Answer(answer.IsCorrectAnswer)">@answer.Text</button>
+							}
+						</div>
+					}
 
-	<p>Förklaring: @question.ExplanationText</p>
+					@* Dyker upp när man har svarat på en fråga *@
+					@if(questionIsAnswered)
+					{
+						@if(answeredCorrectly)
+						{
+							<img src="/Images/check-mark-png-45017.png" style="width:7%;" class="align-self-center"/>
+						}
+						else
+						{
+							<img src="/Images/remove-icon-png-7115.png" style="width:9%;" class="align-self-center" />
+						}
 
-	@if(nextQuestionId != 0)
-	{
-		<a href="/question/@nextQuestionId">Next question</a>
-	}
-	else
-	{
-		<h2>You got @correctPercentage% correct in this segment!</h2>
-		<a href="/segment/@question.SegmentId">Summary</a>
-	}
+						<p style="color:#21e8ef" class="mt-4 fs-5">Förklaring: @question.ExplanationText</p>
 
-
-
+						@if(nextQuestionId != 0)
+						{
+							<a class="btn buttonBorder btn-lg w-25 align-self-center" href="/question/@nextQuestionId">Nästa fråga</a>
+						}
+						else
+						{
+							<h3 style="color:#21e8ef" class="mt-4">Du fick @correctPercentage% rätt i detta segment!</h3>
+							<a class="btn btn-lg buttonBorder w-50 mt-4 align-self-center" href="/segment/@question.SegmentId">Gå till summering</a>
+						}
+					}
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 
@@ -64,8 +78,8 @@
 	private bool answeredCorrectly;
 	private int nextQuestionId;
 	private double correctPercentage;
-	private string correctColor = "btn-primary";
-	private string wrongColor = "btn-primary";
+	private string correctColor = "bg-placeholder";
+	private string wrongColor = "bg-placeholder";
 
 	private ApplicationUser? signedInUser;
 	private AuthenticationState authenticationState;
@@ -82,23 +96,40 @@
 		answers = await uow.AnswerRepo.GetAnswersToQuestionsAsync(Id);
 		nextQuestionId = await questionManager.GetNextQuestionId(Id);
 
+		RandomizeAnswerOrder();
+
 	}
 
 	private async Task Answer(bool isCorrectAnswer)
 	{
 		if (questionIsAnswered) return;
-
+		//Sparar svaret till databasen
 		await questionManager.SaveResponseToUser(Id, signedInUser, isCorrectAnswer);
 
 		questionIsAnswered = true;
 		answeredCorrectly = isCorrectAnswer;
 
-		correctColor = "btn-success";
-		wrongColor = "btn-danger";
+		//Ändrar färg på svaren
+		correctColor = "bg-success text-light";
+		wrongColor = "bg-danger text-light";
 
+		//Om det var sista frågan i segmentet räknas procenten ut
 		if(nextQuestionId == 0)
 		{
 			correctPercentage = await questionManager.CalculateCorrectPercentage(question.SegmentId, signedInUser);
+		}
+	}
+
+	private void RandomizeAnswerOrder()
+	{
+		Random rand = new();
+
+		for(int i=0; i<answers.Count(); i++)
+		{
+			int randomIndex = rand.Next(answers.Count);
+			var temp = answers[i];
+			answers[i] = answers[randomIndex];
+			answers[randomIndex] = temp;
 		}
 	}
 }
