@@ -1,13 +1,16 @@
 ﻿@page "/Admin"
 @using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwareness.Components.BComponents
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @attribute [Authorize(Roles = "Admin")]
+@inject NavigationManager navManager
 @rendermode InteractiveServer
 @inject ValhallaUow uow 
 
 
-<h3>Good Work Mr Admin! </h3>
+
+
 
 @if (Categories == null || Segments == null)
 {
@@ -15,18 +18,19 @@
 }
 else
 {
-    <div class="container mt-5">
+    <div class="container mt-5 align-content-start">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body bg-dark" style="border:1px solid #21e8ef">
+                <div class="card" style="border:none;">
+                    <div class="card-body bg-dark" style="border:1px solid #0d5959">
                         <h3 class="card-title text-center">Create a new Category!</h3>
                         @if (ErrorMessageCategory != "")
                         {
                             <div class="alert alert-danger" role="alert">
                                 @ErrorMessageCategory
                             </div>
-                        } else if (CategorySuccessMessage != "")
+                        }
+                        else if (CategorySuccessMessage != "")
                         {
                             <div class="alert alert-success" role="alert">
                                 @CategorySuccessMessage
@@ -34,7 +38,9 @@ else
                         }
                         <div class="d-flex flex-column align-items-center">
                             <input type="text" class="inputBorder mb-2 w-75" placeholder="Category Name" @bind=categoryName required>
-                            <button class="btn btn-lg buttonBorder btn-block" @onclick="AddCategory">Add Category</button>
+                            <div></div>
+                            <button class="btn buttonBorder btn-block w-75 mb-3" @onclick="AddCategory">Add Category</button>
+                            <EditCategoryComponent Categories="Categories"></EditCategoryComponent>
                         </div>
                     </div>
                 </div>
@@ -43,8 +49,8 @@ else
 
         <div class="row justify-content-center mt-3">
             <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body bg-dark" style="border:1px solid #21e8ef">
+                <div class="card" style="border:none;">
+                    <div class="card-body bg-dark" style="border:1px solid #0d5959">
                         <h3 class="card-title text-center">Create a new Segment!</h3>
                         @if (ErrorMessageSegment != "")
                         {
@@ -58,7 +64,7 @@ else
                                 @SegmentSuccessMessage
                             </div>
                         }
-                        
+
                         <div class="d-flex flex-column align-items-center">
                             <input type="text" class="inputBorder mb-2 w-75" @bind=segmentName placeholder="Segment Name" required>
                             <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Segment Information" @bind=segmentInformation required></textarea>
@@ -66,10 +72,11 @@ else
                                 <option selected>Select Category</option>
                                 @foreach (var category in Categories)
                                 {
-                                    <option value="@category.Id" style="background-color:#292b2c" >@category.Name</option>
+                                    <option value="@category.Id" style="background-color:#292b2c">@category.Name</option>
                                 }
                             </select>
-                            <button class="btn btn-lg buttonBorder btn-block" @onclick="AddSegment">Add Segment</button>
+                            <button class="btn buttonBorder btn-block w-75 mb-3" @onclick="AddSegment">Add Segment</button>
+                            <EditSegmentComponent Segments="Segments" Categories="Categories"></EditSegmentComponent>
                         </div>
                     </div>
                 </div>
@@ -78,8 +85,8 @@ else
 
         <div class="row justify-content-center mt-3">
             <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body bg-dark" style="border:1px solid #21e8ef">
+                <div class="card" style="border:none;">
+                    <div class="card-body bg-dark" style="border:1px solid #0d5959">
                         <h3 class="card-title text-center">Add a new question!</h3>
                         @if (ErrorMessageQuestion != "")
                         {
@@ -105,22 +112,26 @@ else
                                     <option value="@segment.Id" style="background-color:#292b2c;">@segment.Name in @category.Name </option>
                                 }
                             </select>
-                            <input type="text" class="inputBorder mb-2 w-75" placeholder="First Answer" @bind=firstAnswer required>
+                            <input type="text" class="inputBorder mb-2 w-75 mt-3" placeholder="First Answer" @bind=firstAnswer required>
                             <select class="inputBorder mb-2 w-75" @bind=isFirstAnswerCorrect>
-                                <option value="True" style="background-color:#292b2c; color:green !important;">True</option>
-                                <option value="False" style="background-color:#292b2c; color:red !important;">False</option>
+                                <option value="" disabled selected>Correct/Incorrect</option>
+                                <option value="True" style="background-color:#292b2c; color:green !important;">Correct Answer</option>
+                                <option value="False" style="background-color:#292b2c; color:red !important;">Incorrect Answer</option>
                             </select>
-                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Second Answer" @bind=secondAnswer required>
+                            <input type="text" class="inputBorder mb-2 w-75 mt-3" placeholder="Second Answer" @bind=secondAnswer required>
                             <select class="inputBorder mb-2 w-75" @bind=isSecondAnswerCorrect>
-                                <option value="True" style="background-color:#292b2c; color:green !important;">True</option>
-                                <option value="False" style="background-color:#292b2c; color:red !important;">False</option>
+                                <option value="" disabled selected>Correct/Incorrect</option>
+                                <option value="True" style="background-color:#292b2c; color:green !important;">Correct Answer</option>
+                                <option value="False" style="background-color:#292b2c; color:red !important;">Incorrect Answer</option>
                             </select>
-                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Third Answer" @bind=thirdAnswer required>
-                            <select class="inputBorder mb-2 w-75" @bind=isThirdAnswerCorrect>
-                                <option value="True" style="background-color:#292b2c; color:green !important;">True</option>
-                                <option value="False" style="background-color:#292b2c;color:red !important;">False</option>
+                            <input type="text" class="inputBorder mb-2 w-75 mt-3" placeholder="Third Answer" @bind=thirdAnswer required>
+                            <select class="inputBorder mb-2 w-75 " @bind=isThirdAnswerCorrect>
+                                <option value="" disabled selected>Correct/Incorrect</option>
+                                <option value="True" style="background-color:#292b2c; color:green !important;">Correct Answer</option>
+                                <option value="False" style="background-color:#292b2c;color:red !important;">Incorrect Answer</option>
                             </select>
-                            <button class="btn btn-lg buttonBorder btn-block" @onclick="AddQuestion">Add Question</button>
+                            <button class="btn  buttonBorder btn-block w-75 mb-3" @onclick="AddQuestion">Add Question</button>
+                            <EditQuestionComponent Questions="Questions"></EditQuestionComponent>
                         </div>
 
                     </div>
@@ -135,9 +146,12 @@ else
 @code {
     private List<CategoryModel> Categories { get; set; }
     private List<SegmentModel> Segments { get; set; }
+    private List<QuestionModel> Questions { get; set; }
     private string segmentName;
     private string segmentInformation;
     private int? segmentCategoryId;
+
+
 
     private string firstAnswer = "";
     private string secondAnswer = "";
@@ -166,6 +180,11 @@ else
     {
         Segments = await uow.SegmentRepo.GetAllAsync();
         Categories = await uow.CategoryRepo.GetAllAsync();
+        Questions = await uow.QuestionRepo.GetAllAsync();
+    }
+    private void NavToPage()
+    {
+        navManager.NavigateTo("/Admin/Edit");
     }
 
     private async Task AddSegment()
@@ -182,6 +201,8 @@ else
         };
             await uow.SegmentRepo.AddAsync(segmentToAdd);
             await uow.SegmentRepo.SaveChangesAsync();
+            Segments.Add(segmentToAdd);
+            StateHasChanged();
             segmentName = "";
             segmentInformation = "";
             segmentCategoryId = 1;
@@ -207,6 +228,8 @@ else
 
             await uow.CategoryRepo.AddAsync(categoryToAdd);
             await uow.CategoryRepo.SaveChangesAsync();
+            Categories.Add(categoryToAdd);
+            StateHasChanged();
             categoryName = "";
             ErrorMessageCategory = "";
             CategorySuccessMessage = $"The {categoryToAdd.Name}Category Was Successfully Created!";
@@ -246,9 +269,12 @@ else
                     Text = questionText
                 };
             await uow.QuestionRepo.AddAsync(questionToAdd);
+            Questions.Add(questionToAdd);
+            StateHasChanged();
 
 
             await AddAnswers(questionToAdd.Id);
+            
             questionTitle = "";
             questionText = "";
             questionExplanationText = "";
@@ -269,9 +295,6 @@ else
     private async Task AddAnswers(int questionId)
     {
        
-
-     
-
 
                 AnswerModel firstAnswerToAdd = new()
             {

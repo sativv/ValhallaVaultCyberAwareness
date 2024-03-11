@@ -45,5 +45,14 @@ namespace ValhallaVaultCyberAwareness.Repository
         {
             await context.SaveChangesAsync();
         }
+
+        public async Task EditCategoryAsync(string name, int id)
+        {
+            CategoryModel categoryToEdit = await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (categoryToEdit != null)
+            {
+                categoryToEdit.Name = name;
+            }
+        }
     }
 }

@@ -19,15 +19,13 @@
 }
 else
 {
-  
-
      <div class="card bg-dark text-light text-center p-4" >
           <h2 style="color:#21e8ef" class="mb-5">@ChosenSegment.Name</h2>
         <div class="d-flex flex-column align-items-center">
 
             <p class="mb-2" style="color:#21e8ef">Some Information About This Segment:</p>
             <h3 style="color:#21e8ef">@ChosenSegment.InfoText</h3>
-            
+         
             <ul class="list-group w-50 text-center">
                 @foreach(var question in questions)
                 {
@@ -49,13 +47,11 @@ else
                     
                 }
              </ul>
-      </div>
-                   
-          
+        </div>
       </div>
          
 }
-@if(completionPercentage != null)
+@if (completionPercentage != null)
 {
     <h5>Completion: @completionPercentage%</h5>
 }
@@ -86,13 +82,13 @@ else
         ChosenSegment = await uow.SegmentRepo.GetByIdAsync(Id);
 
         //Gör ViewModel som innehåller användarens progress så man kan displaya röd eller grön text.
-        foreach(var question in ChosenSegment.Questions)
+        foreach (var question in ChosenSegment.Questions)
         {
             QuestionViewModel newQuestion = new()
-            {
-                Id = question.Id,
-                Title = question.Title,
-            };
+                {
+                    Id = question.Id,
+                    Title = question.Title,
+                };
             try
             {
                 //Kollar vad användaren har svarat
@@ -117,5 +113,5 @@ else
         }
 
     }
-    
+
 }

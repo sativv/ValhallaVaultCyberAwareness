@@ -28,7 +28,7 @@ else
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <input type="text" placeholder="Search" @oninput="FilterCategories" class="inputBorder mb-3 w-100" />
-                <div class="card bg-dark text-light text-center p-4" style="height: 100vh;">
+                <div class="card bg-dark text-light text-center p-4 min-vh-100">
                     <h1 style="color:#21e8ef" class="mb-5">Browse Our Categories!</h1>
                     @if (isFiltered && filteredCategories.Any())
                     {

@@ -1,0 +1,97 @@
+﻿@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@rendermode InteractiveServer
+@inject ValhallaUow uow
+@inject NavigationManager navManager
+@inject IJSRuntime JSRuntime
+
+
+
+@if(Categories == null)
+{
+    <h1>Loading Categories...</h1>
+}
+else
+{
+    <div class="card bg-dark text-light" style="border:none !important;">
+        <div class="card-header" @onclick="Toggle">
+            <button class="btn btn-lg buttonBorder w-100">Edit / Remove Categories</button>
+        </div>
+        <div class="@(IsCollapsed ? "collapse" : "")">
+            <div class="card-body">
+                <div class="d-flex flex-column align-items-center">
+                    <strong class="mb-1">Which category would you like to delete or edit?</strong>
+                    <select @bind="CategoryToDeleteOrEdit" class="w-100 inputBorder bg-dark mb-1">
+                @foreach (var category in Categories)
+                {
+
+
+                            <option value="@category.Id" style="background-color:#292b2c">@category.Name</option>
+                          
+                  
+                      
+                
+                }
+                    </select>
+                    <div class="d-flex mt-1 w-100">
+                        <button class="btn buttonBorder w-50" style="border:1px solid red" @onclick="() => RemoveCategory(CategoryToDeleteOrEdit)">Delete</button>
+                        <button class="btn buttonBorder w-50" style="border:1px solid yellow" @onclick="() => RedirectToEditCategoryPage(CategoryToDeleteOrEdit)">Edit</button>
+                    </div>
+                    
+              
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@code {
+    [Parameter]
+    public List<CategoryModel> Categories { get; set; }
+
+    private int CategoryToDeleteOrEdit;
+
+    private bool IsCollapsed = true;
+
+    private string CollapseClass => IsCollapsed ? "collapse" : "";
+
+    private void Toggle()
+    {
+        IsCollapsed = !IsCollapsed;
+    }
+
+    public async Task RemoveCategory(int id)
+    {
+        if(id != null)
+        {
+            if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to remove this category?"))
+
+                return;
+
+
+            CategoryModel modelToRemove = await uow.CategoryRepo.GetByIdAsync(id);
+            uow.CategoryRepo.RemoveByIdAsync(id);
+            Categories.Remove(modelToRemove);
+            StateHasChanged();
+
+        }
+    }
+
+
+
+
+
+
+    public async Task  RedirectToEditCategoryPage(int id)
+    {
+        if (id != 0)
+        {
+
+            navManager.NavigateTo($"/AdminC/{id}");
+        }
+    }  
+
+     
+}
