@@ -1,0 +1,87 @@
+﻿@page "/AdminSubC/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwareness.Components.BComponents
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@attribute [Authorize(Roles = "Admin")]
+@inject IJSRuntime JSRuntime
+@inject ValhallaUow uow
+@rendermode InteractiveServer
+@inject NavigationManager navManager
+
+
+@if(Subcategory == null || Segments == null || currentSegment == null)
+{
+    <h1>Loading...</h1>
+} else
+{
+    <div class="d-flex vh-100 mt-5 justify-content-center">
+        <div class="card bg-dark w-50 align-items-center text-center">
+            <h1>Currently Editing Subcategory: @Subcategory.Title</h1>
+
+            <label class="mt-3 mb-1 fw-bold">Old Title: @Subcategory.Title</label>
+            <input  class="inputBorder w-75" placeholder="New Title" @bind="newName"/>
+            <OldVersionComponent Title="Old Info Text" Text="@Subcategory.InfoText"></OldVersionComponent>
+            <textarea class="inputBorder w-75" @bind="newInfoText" placeholder="New Info Text"></textarea>
+            <label class="mt-3 mb-1 fw-bold">Old Image:</label><img src="@Subcategory.Image" style="width:10%"/>
+            <input class="inputBorder w-75" placeholder="New Image URL" @bind="newImageUrl"/>
+            
+            <label class="m5-3 fw-bold">Change Segment</label>
+            <select @bind="@pickedSegment" class="inputBorder w-75">
+            <option value="@currentSegment.Id">Currently in Segment: @currentSegment.Name</option>
+                @foreach(var segment in Segments)
+                {
+                    <option value="@segment.Id" style="background-color:#292b2c">@segment.Name</option>
+                }
+            </select>
+            <button class="btn buttonBorder btn-block  mt-3 w-50" @onclick="() => UpdateSubcategory(pickedSegment, newInfoText, newName, newImageUrl)">Update Subcategory!</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private SubCategoryModel Subcategory { get; set; }
+    private SegmentModel currentSegment { get; set; }
+    private List<SegmentModel> Segments { get; set; }
+
+
+    [Parameter]
+    public string newImageUrl { get; set; } 
+    [Parameter]
+    public string newName { get; set; }  
+    [Parameter]
+    public string newInfoText { get; set; }
+
+    private int pickedSegment;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Subcategory = await uow.SubcategoryRepo.GetByIdAsync(Id);
+        currentSegment = await uow.SegmentRepo.GetByIdAsync(Subcategory.SegmentId);
+        Segments = await uow.SegmentRepo.GetAllAsync();
+    }
+    private async Task UpdateSubcategory(int pickedSegment, string newInfoText, string newTitle, string newImageUrl)
+    {
+        if (pickedSegment != 0 || !string.IsNullOrEmpty(newInfoText) || !string.IsNullOrEmpty(newTitle) || !string.IsNullOrEmpty(newImageUrl))
+        {
+            if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to updaet this segment?"))
+                return;
+
+            SubCategoryModel subcategoryToUpdate = new()
+                {
+                    Title = newTitle,
+                    SegmentId = pickedSegment,
+                    InfoText = newInfoText,
+                    Image = newImageUrl
+                };
+
+            await uow.SubcategoryRepo.UpdateAsync(Id, subcategoryToUpdate); 
+            navManager.NavigateTo("/admin");
+            
+        }
+    }
+
+}

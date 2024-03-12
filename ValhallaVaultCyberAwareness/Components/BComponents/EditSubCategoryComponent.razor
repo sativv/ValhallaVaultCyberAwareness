@@ -1,0 +1,97 @@
+﻿@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@rendermode InteractiveServer
+@inject ValhallaUow uow
+@inject NavigationManager navManager
+@inject IJSRuntime JSRuntime
+
+
+
+@if (SubCategories == null)
+{
+    <h1>Loading Subcategories...</h1>
+}
+else
+{
+    <div class="card bg-dark text-light" style="border:none !important;">
+        <div class="card-header" @onclick="Toggle">
+            <button class="btn btn-lg buttonBorder w-100">Edit / Remove Subcategories</button>
+        </div>
+        <div class="@(IsCollapsed ? "collapse" : "")">
+            <div class="card-body">
+                <div class="d-flex flex-column align-items-center">
+                    <strong class="mb-1">Which subcategory would you like to delete or edit?</strong>
+                    <select @bind="SubCategoryToDeleteOrEdit" class="w-100 inputBorder bg-dark mb-1">
+                        @foreach (var subCategory in SubCategories)
+                        {
+
+
+                            <option value="@subCategory.Id" style="background-color:#292b2c">@subCategory.Title</option>
+
+
+
+
+                        }
+                    </select>
+                    <div class="d-flex mt-1 w-100">
+                        <button class="btn buttonBorder w-50" style="border:1px solid red" @onclick="() => RemoveSubCategory(SubCategoryToDeleteOrEdit)">Delete</button>
+                        <button class="btn buttonBorder w-50" style="border:1px solid yellow" @onclick="() => RedirectToEditCategoryPage(SubCategoryToDeleteOrEdit)">Edit</button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@code {
+    [Parameter]
+    public List<SubCategoryModel> SubCategories { get; set; }
+
+    private int SubCategoryToDeleteOrEdit;
+
+    private bool IsCollapsed = true;
+
+    private string CollapseClass => IsCollapsed ? "collapse" : "";
+
+    private void Toggle()
+    {
+        IsCollapsed = !IsCollapsed;
+    }
+
+    public async Task RemoveSubCategory(int id)
+    {
+        if (id != null)
+        {
+            if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to remove this subcategory?"))
+
+                return;
+
+
+            SubCategoryModel modelToRemove = await uow.SubcategoryRepo.GetByIdAsync(id);
+            uow.CategoryRepo.RemoveByIdAsync(id);
+            SubCategories.Remove(modelToRemove);
+            StateHasChanged();
+
+        }
+    }
+
+
+
+
+
+
+    public async Task RedirectToEditCategoryPage(int id)
+    {
+        if (id != 0)
+        {
+
+            navManager.NavigateTo($"/AdminSubC/{id}");
+        }
+    }
+
+
+}

@@ -16,6 +16,7 @@
           
            
             <EditCategoryComponent Categories="Categories"></EditCategoryComponent>
+            <EditSubCategoryComponent SubCategories="SubCategories"></EditSubCategoryComponent>
             <EditSegmentComponent Segments="Segments"></EditSegmentComponent>
             <EditQuestionComponent Questions="Questions"></EditQuestionComponent>
         </div>
@@ -29,6 +30,7 @@
 @code {
     List<CategoryModel> Categories = new();
     List<SegmentModel> Segments = new();
+    List<SubCategoryModel> SubCategories = new();
     List<QuestionModel> Questions = new();
     List<AnswerModel> Answers = new();
 
@@ -41,6 +43,7 @@
         Segments = await uow.SegmentRepo.GetAllAsync();
         Questions = await uow.QuestionRepo.GetAllAsync();
         Answers = await uow.AnswerRepo.GetAllAsync();
+        SubCategories = await uow.SubcategoryRepo.GetAllAsync();
     }
 
     private void NavToPage()

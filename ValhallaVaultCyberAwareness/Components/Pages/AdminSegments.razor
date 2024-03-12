@@ -5,6 +5,7 @@
 @inject ValhallaUow uow
 @inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
+@inject NavigationManager navManager
 
 @if(Segment == null || Category == null || Categories == null)
 {
@@ -62,7 +63,7 @@
 
     private async Task UpdateSegment(int pickedCategory, string infoText, string Name)
     {
-        if (pickedCategory != 0 || string.IsNullOrEmpty(infoText) || string.IsNullOrEmpty(Name))
+        if (pickedCategory != 0 || !string.IsNullOrEmpty(infoText) || !string.IsNullOrEmpty(Name))
         {
             if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to update this segment?"))
                 return;
@@ -76,6 +77,7 @@
                 };
 
                 uow.SegmentRepo.UpdateAsync(Segment.Id, updatedSegment);
+            navManager.NavigateTo("/admin");
         }
 
     }
