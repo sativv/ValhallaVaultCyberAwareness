@@ -131,6 +131,12 @@ else
 
     private async Task EditQuestion()
     {
+        if (string.IsNullOrEmpty(isAnswer1Correct) && string.IsNullOrEmpty(isAnswer2Correct) && string.IsNullOrEmpty(isAnswer3Correct) && string.IsNullOrEmpty(newFirstAnswerText) && string.IsNullOrEmpty(newSecondAnswerText) && string.IsNullOrEmpty(newThirdAnswerText) && string.IsNullOrEmpty(newExplanationText) && string.IsNullOrEmpty(newQuestionText) && string.IsNullOrEmpty(newName) && newSubcategory == null)
+        {
+            ErrorMessageQuestion = "No changes detected";
+            StateHasChanged();
+            return;
+        }
         int trueAnswerCount = 0;
         if (isAnswer1Correct == "True") trueAnswerCount++;
         if (isAnswer2Correct == "True") trueAnswerCount++;
