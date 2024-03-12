@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValhallaVaultCyberAwareness.Data;
 
@@ -11,9 +12,11 @@ using ValhallaVaultCyberAwareness.Data;
 namespace ValhallaVaultCyberAwareness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240312093401_SeedSegment1InfoText")]
+    partial class SeedSegment1InfoText
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -898,10 +901,10 @@ namespace ValhallaVaultCyberAwareness.Migrations
                         new
                         {
                             Id = 14,
-                            ExplanationText = "Statssponsrade hackers är aktörer som arbetar på uppdrag av eller med stöd från en regering för att genomföra cyberspionage, ofta riktat mot utländska intressen, organisationer eller regeringar för att få strategiska fördelar.",
+                            ExplanationText = "Lunds universitet upptäcker att forskningsdata om ny teknologi har stulits. Undersökningar tyder på en välorganiserad grupp med kopplingar till en utländsk stat. Vilken typ av aktör ligger sannolikt bakom detta?",
                             SubCategoryId = 39,
-                            Text = "Lunds universitet upptäcker att forskningsdata om ny teknologi har stulits. Undersökningar tyder på en välorganiserad grupp med kopplingar till en utländsk stat. Vilken typ av aktör ligger sannolikt bakom detta?",
-                            Title = "Forskningsdata om ny teknologi stulen"
+                            Text = "Statssponsrade hackers är aktörer som arbetar på uppdrag av eller med stöd från en regering för att genomföra cyberspionage, ofta riktat mot utländska intressen, organisationer eller regeringar för att få strategiska fördelar.",
+                            Title = "Statssponsrade hackers"
                         },
                         new
                         {
@@ -1031,63 +1034,54 @@ namespace ValhallaVaultCyberAwareness.Migrations
                         {
                             Id = 2,
                             CategoryId = 1,
-                            InfoText = "Bedrägerier kan inträffa i hemmet, genom oönskad försäljning eller stöld. Nätfiske är en specifik form av bedrägeri som utförs online genom e-post, meddelandeappar eller sociala medier, med syftet att lura offret att lämna ut personlig information.",
                             Name = "Del 2"
                         },
                         new
                         {
                             Id = 3,
                             CategoryId = 1,
-                            InfoText = "Vid fakturabedrägerier är det vanligt att olika annonsföretag försöker lura småföretagare med påstridiga och otydliga metoder. Det sker ofta genom att de skickar ut bluffakturor. Ransomware är en form av skadlig programvarasom krypterar filer på en organisations eller persons dator och kräver en lösensumma för att återställa tillgången till filerna.",
                             Name = "Del 3"
                         },
                         new
                         {
                             Id = 4,
                             CategoryId = 2,
-                            InfoText = "Digital säkerhet handlar om att skydda datorer, nätverk, mobiltelefoner och andra digitala enheter från skadlig verksamhet och obehörig åtkomst. Detta är viktigt då det krävs kunskap och expertis för att kunna sydda sig självoch sin organisation mot cyberattacker.",
                             Name = "Del 1"
                         },
                         new
                         {
                             Id = 5,
                             CategoryId = 2,
-                            InfoText = "Genom att utge sig för att vara en legitm organisation, som en bank, en regeringsbyrå eller ett företag, försöker bedragaren lura offret att lämna ut personlig information, som lösenord eller kreditkortsuppgifter, eller att utföra obehöriga transaktioner.",
                             Name = "Del 2"
                         },
                         new
                         {
                             Id = 6,
                             CategoryId = 2,
-                            InfoText = "Dataintrång innebär att obehöriga parter kan få åtkomst till en dator ett nätverk eller annan digital enhet utan tillstånd.Detta kan ske genom skadlig programvara eller skadlig kod så kallada virus och trojaner. Dessa termer är alla relaterade till säkerhetsrisker på digitala plattformar och är viktiga att förstå för att kunna skydda sig själv och sina enheter mot cyberbrott.",
                             Name = "Del 3"
                         },
                         new
                         {
                             Id = 7,
                             CategoryId = 2,
-                            InfoText = "Attacker mot servrar kan orsaka allvarliga konsekvenser, inklusive förlust av data, otillgänglighet av tjänster, stöld av känslig information eller skadegörelse. Detta kräver robusta säkerhetsåtgärder för att skydda digitala system och infrastrukturer mot attacker samt behovet av att snabbt hantera incidenter när de inträffar för att minimera skadorna.",
                             Name = "Del 4"
                         },
                         new
                         {
                             Id = 8,
                             CategoryId = 3,
-                            InfoText = "Cyberspionage är en form av spionage där information och data samlas in från digitala system och nätverk för strategiska eller ekonomiska syften. Det utförs oftast av stater, organiserade brottsliga grupper eller företag och kan rikta sig mot regeringar, företag eller enskilda personer.",
                             Name = "Del 1"
                         },
                         new
                         {
                             Id = 9,
                             CategoryId = 3,
-                            InfoText = " Påverkanskampanjer är planerade och koordinerade aktiviteter för att påverka människors åsikter eller beslut, ofta genom användning av desinformation. Affärsspionage innebär att en organisation eller individ stjäl konfidentiell affärsinformation från ett annat företag för ekonomisk vinning eller konkurrensfördel. Dessa aktiviteter utgör ett allvarligt hot mot företag, organisationer och samhället som helhet.",
                             Name = "Del 2"
                         },
                         new
                         {
                             Id = 10,
                             CategoryId = 3,
-                            InfoText = " För att bekämpa cyberspionage krävs samverkan mellan olika aktörer såsom underrättelsetjänster, myndigheter, företag och akademiska institutioner.  Genom att dela information och samarbeta kring säkerhetsåtgärder kan man förbättra förmågan att upptäcka, förebygga och motverka hotet från cyberspionage.",
                             Name = "Del 3"
                         });
                 });
