@@ -3,11 +3,13 @@
 @using Microsoft.AspNetCore.Identity
 @using ValhallaVaultCyberAwareness.Components.BComponents
 @using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Managers
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @rendermode InteractiveServer
 @inject ValhallaUow uow
 @inject NavigationManager navManager
+@inject QuestionManager questionManager
 @inject SignInManager<ApplicationUser> signInManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @attribute [Authorize]
@@ -55,6 +57,11 @@ else
                             }
                         }
                     }
+
+                    <h4 class="mt-5 text-center">User total progression:</h4>
+                    <div class="progress mt-2 w-75 align-self-center">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: @percentage%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">@percentage%</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,6 +85,8 @@ else
 
     bool isFiltered;
 
+    private double percentage;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,6 +97,8 @@ else
         {
             signedInUser = await signInManager.UserManager.GetUserAsync(authenticationState.User);
         }
+
+        percentage = await questionManager.CalculateTotalPercentage(signedInUser);
     }
 
     private void navToSegmentPage(int id)
