@@ -32,10 +32,8 @@ namespace ValhallaVaultCyberAwareness.Managers
                     answeredResponses.Add(userResponse);
                 }
             }
-            //Slänger en exception ifall vi inte har lika många svar som frågor
-            if (questions.Count() != answeredResponses.Count()) throw new Exception("All questions haven't been answered");
 
-            return Math.Round(correctAnswers / questions.Count() * 100, 2);
+            return Math.Round(correctAnswers / questions.Count() * 100, 0);
 
         }
 
