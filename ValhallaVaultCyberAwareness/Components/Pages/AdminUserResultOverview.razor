@@ -9,20 +9,23 @@
 @attribute [Authorize(Roles = "Admin")]
 @rendermode InteractiveServer
 
-<div class="container vh-100 justify-content-center">
-	<h1>Statistics</h1>
-	<h3>Click on the data you want to see</h3>
 
-	<div class="mt-4">
-		<button class="btn text-light" @onclick="ShowTotal"><h3>Total answered</h3></button>
+
+<div class="container vh-100  justify-content-center">
+	<h1>Statistics</h1>
+	<h3 style="border-bottom:1px solid white">Click on the data you want to see</h3>
+
+	<button class=" mt-4 btn text-light" @onclick="ShowTotal"><h3>Total answered</h3></button>
+	<div class="" style="border:1px solid white " >
 		@if (isShowingTotal)
 		{
 			@if (allUsers != null)
 			{
-				<table class="table w-25">
+				
+				<table class="table">
 					<thead>
 						<tr>
-							<th>Username</th>
+							<th class="w-25">Username</th>
 							<th>Total</th>
 						</tr>
 					</thead>
@@ -40,6 +43,7 @@
 						</tr>
 					</tbody>
 				</table>
+			
 			}
 			else
 			{
@@ -48,8 +52,8 @@
 		}
 	</div>
 
-	<div class="mt-4">
-		<button class="btn text-light" @onclick="ShowCategories"><h3>Categories</h3></button>
+	<button class="btn mt-4 text-light" @onclick="ShowCategories"><h3>Categories</h3></button>
+	<div  style="border:1px solid white">
 		@if (isShowingCategories)
 		{
 			@if (subPercentage != null)
@@ -93,8 +97,8 @@
 		}
 	</div>
 
-	<div class="mt-4">
-		<button class="btn text-light" @onclick="ShowSubCategories"><h3>SubCategories</h3></button>
+		<button class="btn mt-4 text-light" @onclick="ShowSubCategories"><h3>SubCategories</h3></button>
+	<div class=" overflow-auto" style="white-space:nowrap; border:1px solid white">
 		@if (isShowingSubCategories)
 		{
 			@if (subPercentage != null)
