@@ -1,22 +1,66 @@
 ﻿@page "/AdminQ/{Id:int}"
+@using ValhallaVaultCyberAwareness.Components.BComponents
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
+@rendermode InteractiveServer
 
 
-
-        <h1>@Question.Title</h1>
-        <h3>@Question.Text</h3>
-        
-@foreach(var answer in Answers)
+@if(Answers == null)
 {
-    <h3>@answer.Text | @(answer.IsCorrectAnswer ? "Correct" : "Incorrect")</h3>
+    <h1>Loading...</h1>
+} else
+{
+    <div class="d-flex flex-column justify-content-center align-items-center">
+    <h1>Currently Editing Question: @Question.Title</h1>
+    
+    <p>Old Name: @Question.Title</p>
+    <label>New Name:</label>
+    <input type="text" placeholder="New Name" class="inputBorder"/>
+
+   <OldVersionComponent Title="Old Explanation Text" Text="@Question.ExplanationText"></OldVersionComponent>
+   <label>New Explanation Text:</label>
+   <textarea placeholder="New Explanation Text" class="inputBorder"></textarea>
+
+   <OldVersionComponent Title="Old Question Text" Text="@Question.Text"></OldVersionComponent>
+
+    @foreach(var answer in Answers)
+    {       
+            <p class="mt-3">Old Answer: @answer.Text | @(answer.IsCorrectAnswer ? "Correct" : "Incorrect")</p>
+
+            <input type="text" placeholder="New Answer" class="inputBorder"/>
+            <select class="inputBorder">
+                @if (answer.IsCorrectAnswer)
+                {
+                    <option selected>Correct</option>
+                    <option>Incorrect</option>
+                } else
+                {
+                    <option>Correct</option>
+                    <option selected>Incorrect</option>
+                }
+
+        </select>
+    }
+    </div>
 }
+
+    
+
+        
+        
+
+
+
+
+
 @code {
     [Parameter]
     public int Id { get; set; }
     QuestionModel Question = new();
     List<AnswerModel> Answers = new();
+    private bool oldIsCorrect;
+    private bool newIsCorrect;
 
     protected override async Task OnInitializedAsync()
     {

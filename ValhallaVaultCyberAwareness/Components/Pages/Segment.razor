@@ -25,26 +25,11 @@ else
           <h2 style="color:#21e8ef" class="mb-5">@ChosenSegment.Name</h2>
         <div class="d-flex flex-column align-items-center">
 
-            <p class="mb-2" style="color:#21e8ef">Some Information About This Segment:</p>
-            <h3 style="color:#21e8ef">@ChosenSegment.InfoText</h3>
+            <p class="w-75" style="color:#21e8ef">@ChosenSegment.InfoText</p>
          
             <ul class="list-group w-50 text-center">
                 @foreach(var subcategory in subCategories)
                 {
-                    @* <button class="btn buttonBorder mt-4 @(subcategory.IsAvailable ? "text-light" : "text-danger")" @onclick="ToggleCollapse">@subcategory.Title</button>
-                    <div class="@(IsCollapsed? "" : "")">
-                        <div class="card bg-dark text-light" style="border:none;">
-                            <div class="card-body">
-                                @for(int i=0; i < subcategory.Questions.Count(); i++)
-                                {
-                                    <div class="mt-2 ">
-                                        <a class="btn btn-lg buttonBorder" href="/question/@subcategory.Questions[i].Id">Question: @(i+1)</a>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div> *@
-
                     <SubCategoryComponent SubCategory="subcategory" SignedInUser="signedInUser" IsAvailable="subcategory.IsAvailable"></SubCategoryComponent>
                 }
              </ul>
