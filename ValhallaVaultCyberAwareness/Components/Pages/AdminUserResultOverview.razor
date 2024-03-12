@@ -1,0 +1,298 @@
+﻿@page "/adminoverview"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Managers
+@using ValhallaVaultCyberAwareness.Models
+@using ValhallaVaultCyberAwareness.Repository
+@inject ValhallaUow uow
+@inject QuestionManager questionManager
+@attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
+
+<div class="container vh-100 justify-content-center">
+	<h1>Statistics</h1>
+	<h3>Click on the data you want to see</h3>
+
+	<div class="mt-4">
+		<button class="btn text-light" @onclick="ShowTotal"><h3>Total answered</h3></button>
+		@if (isShowingTotal)
+		{
+			@if (allUsers != null)
+			{
+				<table class="table w-25">
+					<thead>
+						<tr>
+							<th>Username</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < allUsers.Count(); i++)
+						{
+							<tr>
+								<td>@allUsers[i].UserName</td>
+								<td>@totalPercentage[i] %</td>
+							</tr>
+						}
+						<tr class="fw-bold table-info">
+							<td>Average</td>
+							<td>@totalAverage %</td>
+						</tr>
+					</tbody>
+				</table>
+			}
+			else
+			{
+				<h3>Loading...</h3>
+			}
+		}
+	</div>
+
+	<div class="mt-4">
+		<button class="btn text-light" @onclick="ShowCategories"><h3>Categories</h3></button>
+		@if (isShowingCategories)
+		{
+			@if (subPercentage != null)
+			{
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Username</th>
+							@foreach (var cat in allCategories)
+							{
+								<th>@cat.Name</th>
+							}
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < allUsers.Count(); i++)
+						{
+							<tr>
+								<td>@allUsers[i].UserName</td>
+								@for (int j = 0; j < allCategories.Count(); j++)
+								{
+									<td>@categoryPercentage[i][j] %</td>
+								}
+							</tr>
+						}
+						<tr></tr>
+						<tr class="fw-bold table-info">
+							<td>Average</td>
+							@foreach (var result in averageCategoryResult)
+							{
+								<td>@result %</td>
+							}
+						</tr>
+					</tbody>
+				</table>
+			}
+			else
+			{
+				<h3>Loading...</h3>
+			}
+		}
+	</div>
+
+	<div class="mt-4">
+		<button class="btn text-light" @onclick="ShowSubCategories"><h3>SubCategories</h3></button>
+		@if (isShowingSubCategories)
+		{
+			@if (subPercentage != null)
+			{
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Username</th>
+							@foreach (var sub in allSubcategories)
+							{
+								<th>@sub.Title</th>
+							}
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < allUsers.Count(); i++)
+						{
+							<tr>
+								<td>@allUsers[i].UserName</td>
+								@for (int j = 0; j < allSubcategories.Count(); j++)
+								{
+									<td>@subPercentage[i][j] %</td>
+								}
+							</tr>
+						}
+						<tr></tr>
+						<tr class="fw-bold table-info">
+							<td>Average</td>
+							@foreach (var result in averageSubResult)
+							{
+								<td>@result %</td>
+							}
+						</tr>
+					</tbody>
+				</table>
+			}
+			else
+			{
+				<h3>Loading...</h3>
+			}
+		}
+	</div>
+</div>
+
+
+
+
+
+
+@code {
+	private bool isShowingTotal = false;
+	private bool isShowingCategories = false;
+	private bool isShowingSubCategories = false;
+
+	private List<ApplicationUser>? allUsers;
+	private List<double>? totalPercentage;
+	private double totalAverage;
+
+	private List<CategoryModel>? allCategories;
+	private List<List<double>>? categoryPercentage;
+	private List<double>? averageCategoryResult;
+
+	private List<SegmentModel>? allSegments;
+	private List<List<double>>? segmentPercentage;
+	private List<double>? averageSegmentResult;
+
+	private List<SubCategoryModel>? allSubcategories;
+	private List<List<double>>? subPercentage;
+	private List<double>? averageSubResult;
+
+	protected override async Task OnInitializedAsync()
+	{
+		allUsers = await uow.UserRepo.GetAllAsync();
+
+		totalPercentage = await CalculateTotalPercentage();
+		totalAverage = CalculateTotalAverage();
+
+		allCategories = await uow.CategoryRepo.GetAllAsync();
+		categoryPercentage = await CalculateCategoryPercentage();
+		averageCategoryResult = await CalculateAverageCategoryPercentage();
+
+		allSubcategories = await uow.SubcategoryRepo.GetAllAsync();
+		subPercentage = await CalculateSubcategoriesPercentage();
+		averageSubResult = await CalculateAverageSubCategoryPercentage();
+	}
+
+	private void ShowTotal()
+	{
+		isShowingTotal = !isShowingTotal;
+	}
+	private void ShowCategories()
+	{
+		isShowingCategories = !isShowingCategories;
+	}
+	private void ShowSubCategories()
+	{
+		isShowingSubCategories = !isShowingSubCategories;
+	}
+
+	private async Task<List<double>> CalculateTotalPercentage()
+	{
+		List<double> decimals = new();
+
+		foreach(var user in allUsers)
+		{
+			double userScore = await questionManager.CalculateTotalPercentage(user);
+
+			decimals.Add(userScore);
+		}
+
+		return decimals;
+	}
+	private double CalculateTotalAverage()
+	{
+		return Math.Round(totalPercentage.Sum() / allUsers.Count(), 0);
+	}
+
+
+	private async Task<List<List<double>>> CalculateCategoryPercentage()
+	{
+		List<List<double>> allDecimals = new();
+
+
+		foreach (var user in allUsers)
+		{
+			List<double> categoryDecimals = new();
+
+			foreach (var cat in allCategories)
+			{
+				double userScore = await questionManager.CalculatePercentageInCategory(cat.Id, user);
+				categoryDecimals.Add(userScore);
+			}
+
+			allDecimals.Add(categoryDecimals);
+		}
+
+		return allDecimals;
+	}
+	private async Task<List<double>> CalculateAverageCategoryPercentage()
+	{
+		List<double> decimals = new();
+
+		foreach (var cat in allCategories)
+		{
+			double catResult = 0;
+			foreach (var user in allUsers)
+			{
+				double userScore = await questionManager.CalculatePercentageInCategory(cat.Id, user);
+				catResult += userScore;
+			}
+
+			double averageResult = Math.Round(catResult / allUsers.Count(), 0);
+
+			decimals.Add(averageResult);
+		}
+
+		return decimals;
+	}
+
+
+	private async Task<List<List<double>>> CalculateSubcategoriesPercentage()
+	{
+		List<List<double>> allDecimals = new();
+
+
+		foreach(var user in allUsers)
+		{
+			List<double> categoryDecimals = new();
+
+			foreach (var sub in allSubcategories)
+			{
+				double userScore = await questionManager.CalculatePercentageInSubCategory(sub.Id, user);
+				categoryDecimals.Add(userScore);
+			}
+
+			allDecimals.Add(categoryDecimals);
+		}
+
+		return allDecimals;
+	}
+	private async Task<List<double>> CalculateAverageSubCategoryPercentage() 
+	{
+		List<double> decimals = new();
+
+		foreach(var sub in allSubcategories)
+		{
+			double subResult = 0;
+			foreach(var user in allUsers)
+			{
+				double userScore = await questionManager.CalculatePercentageInSubCategory(sub.Id, user);
+				subResult += userScore;
+			}
+
+			double averageResult = Math.Round(subResult / allUsers.Count(), 0);
+
+			decimals.Add(averageResult);
+		}
+
+		return decimals;
+	}
+}

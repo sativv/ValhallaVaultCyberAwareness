@@ -42,7 +42,9 @@ else
 
 		correctPercentage = await manager.CalculateCorrectPercentage(1, signedInUser);
 
-		
+
 		var segmentVies = await progressManager.GetSegmentProgressInCategoryAsync(signedInUser, 1);
+
+		var allquestions = await uow.QuestionRepo.GetQuestionsInCategoryAsync(1);
 	}
 }
