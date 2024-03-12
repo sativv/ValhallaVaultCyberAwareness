@@ -16,8 +16,8 @@
         <div class="card bg-dark w-50 align-items-center text-center">
         <h1>Currently Editing Segment: @Segment.Name </h1>
 
-        <label class="mt-3 mb-1 fw-bold">Old Name: @Segment.Name</label><input class="inputBorder  w-75" @bind="newSegmentName" type="text" placeholder="Name of Segment"/>
-        <OldVersionComponent Title="Old Info Text:" Text="@Segment.InfoText"></OldVersionComponent><textarea @bind="newInfoText" class="inputBorder  w-75"  placeholder="Info Text"/>
+        <label class="mt-3 mb-1 fw-bold">Old Name: @Segment.Name</label><input class="inputBorder  w-75" @bind="newSegmentName" type="text" placeholder="New Segment Name"/>
+        <OldVersionComponent Title="Old Info Text:" Text="@Segment.InfoText"></OldVersionComponent><textarea @bind="newInfoText" class="inputBorder  w-75"  placeholder="New Info Text"/>
 
           <label class="mt-3 mb-1 fw-bold">Change Category</label> <select @bind="PickedCategory" class="inputBorder w-75" >
                 <option value="@Category.Id">Currently in Category: @Category.Name</option>
@@ -76,7 +76,7 @@
                     InfoText = infoText
                 };
 
-                uow.SegmentRepo.UpdateAsync(Segment.Id, updatedSegment);
+            await uow.SegmentRepo.UpdateAsync(Segment.Id, updatedSegment);
             navManager.NavigateTo("/admin");
         }
 

@@ -3,69 +3,194 @@
 @using ValhallaVaultCyberAwareness.Models
 @using ValhallaVaultCyberAwareness.Repository
 @inject ValhallaUow uow
+@inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
+@inject NavigationManager navManager
 
 
-@if(Answers == null)
+@if (Answers == null || currentSubcategory == null || Subcategories == null || Question == null)
 {
     <h1>Loading...</h1>
-} else
+}
+else
 {
-    <div class="d-flex flex-column justify-content-center align-items-center">
-    <h1>Currently Editing Question: @Question.Title</h1>
-    
-    <p>Old Name: @Question.Title</p>
-    <label>New Name:</label>
-    <input type="text" placeholder="New Name" class="inputBorder"/>
 
-   <OldVersionComponent Title="Old Explanation Text" Text="@Question.ExplanationText"></OldVersionComponent>
-   <label>New Explanation Text:</label>
-   <textarea placeholder="New Explanation Text" class="inputBorder"></textarea>
+<div class="d-flex mt-5 justify-content-center" style="height:100vh;">
+    <div class="card bg-dark w-50 align-items-center text-center ">
+        <h3 class="mb-5">Currently Editing Subcategory: @Question.Title</h3>
+            <p class="w-75">Old Name: @Question.Title</p>
+            @if(ErrorMessageQuestion != "")
+            {
+               <div class="alert alert-danger" role="alert">
+                   @ErrorMessageQuestion
+                   </div>
+            }
+            <input type="text" placeholder="New Name" class="inputBorder w-75" @bind="newName" />
+            <OldVersionComponent Title="Old Explanation Text" Text="@Question.ExplanationText"></OldVersionComponent>
+           
+            <textarea placeholder="New Explanation Text" class="inputBorder w-75" @bind="newExplanationText"></textarea>
+            <p>Old Question Text:</p>
+            <p>@Question.Text</p>
+            <textarea placeholder="New Question Text" class="inputBorder w-75" @bind="newQuestionText"></textarea>
 
-   <OldVersionComponent Title="Old Question Text" Text="@Question.Text"></OldVersionComponent>
+           
+          
+                
+                <p class="mt-1 w-75">Old Answer: @firstAnswer.Text | <span class="@(firstAnswer.IsCorrectAnswer ? "text-success" : "text-danger" )">@(firstAnswer.IsCorrectAnswer ? "Correct" : "Incorrect")</span></p>
+                <input type="text" placeholder="New Answer" class="inputBorder w-75" @bind="newFirstAnswerText"/>
+                <select class="inputBorder w-75" @bind="@isAnswer1Correct">
+                <option value="" selected="selected">Correct/Incorrect</option>
+                <option value="True" style="background-color:#292b2c; color:green !important;" >Correct</option>
+                <option value="False" style="background-color:#292b2c; color:red !important;">Incorrect</option>
+                    
+                   
+                </select>
 
-    @foreach(var answer in Answers)
-    {       
-            <p class="mt-3">Old Answer: @answer.Text | @(answer.IsCorrectAnswer ? "Correct" : "Incorrect")</p>
+            <p class="mt-1 w-75">Old Answer: @secondAnswer.Text | <span class="@(secondAnswer.IsCorrectAnswer ? "text-success" : "text-danger" )">@(secondAnswer.IsCorrectAnswer ? "Correct" : "Incorrect")</span></p>
+            <input type="text" placeholder="New Answer" class="inputBorder w-75"  @bind="newSecondAnswerText"/>
+            <select class="inputBorder w-75" @bind="@isAnswer2Correct">
+                <option value="" selected="selected">Correct/Incorrect</option>
+                <option value="True" style="background-color:#292b2c; color:green !important;">Correct</option>
+                <option value="False" style="background-color:#292b2c; color:red !important;">Incorrect</option>
 
-            <input type="text" placeholder="New Answer" class="inputBorder"/>
-            <select class="inputBorder">
-                @if (answer.IsCorrectAnswer)
+
+            </select>
+            <p class="mt-1 w-75">Old Answer: @thirdAnswer.Text | <span class="@(thirdAnswer.IsCorrectAnswer ? "text-success" : "text-danger" )">@(thirdAnswer.IsCorrectAnswer ? "Correct" : "Incorrect")</span></p>
+            <input type="text" placeholder="New Answer" class="inputBorder w-75"  @bind="newThirdAnswerText"/>
+            <select class="inputBorder w-75" @bind="@isAnswer3Correct">
+                <option value="" selected="selected">Correct/Incorrect</option>
+                <option value="True" style="background-color:#292b2c; color:green !important;" >Correct</option>
+                <option value="False" style="background-color:#292b2c; color:red !important;" >Incorrect</option>
+
+
+            </select>
+            <label class="mt-2">Change Subcategory</label>
+            <select @bind="newSubcategory" class="inputBorder w-75 mt-3">
+                <option selected value="@currentSubcategory.Id"> current subcategory: @currentSubcategory.Title</option>
+                @foreach (var sub in Subcategories)
                 {
-                    <option selected>Correct</option>
-                    <option>Incorrect</option>
-                } else
-                {
-                    <option>Correct</option>
-                    <option selected>Incorrect</option>
+                    <option value="@sub.Id" style="background-color:#292b2c">@sub.Title</option>
                 }
-
-        </select>
-    }
+            </select>
+            <button class="btn buttonBorder btn-block w-75 mt-3" @onclick="EditQuestion">Edit Question!</button>
+        </div>
     </div>
 }
-
-    
-
-        
-        
-
-
-
 
 
 @code {
     [Parameter]
     public int Id { get; set; }
     QuestionModel Question = new();
-    List<AnswerModel> Answers = new();
-    private bool oldIsCorrect;
-    private bool newIsCorrect;
+    private List<AnswerModel> Answers = new();
+    List<SubCategoryModel> Subcategories = new();
+    public int AnswerToEdit;
+
+    private SubCategoryModel currentSubcategory;
+    private int newSubcategory;
+
+    private AnswerModel? firstAnswer;
+    private string? firstAnswerText;
+    private AnswerModel? secondAnswer;
+    private string? secondAnswerText;
+    private AnswerModel? thirdAnswer;
+    private string? thirdAnswerText;
+
+    private string newExplanationText;
+    private string newName;
+    private string newQuestionText;
+
+
+
+
+
+    private string newFirstAnswerText = "";
+    private string newSecondAnswerText = "";
+    private string newThirdAnswerText = "";
+
+    string isAnswer1Correct = "";
+    string isAnswer2Correct = "";
+    string isAnswer3Correct = "";
+
+    string ErrorMessageQuestion = "";
+
+
 
     protected override async Task OnInitializedAsync()
     {
         Question = await uow.QuestionRepo.GetByIdAsync(Id);
         Answers = await uow.AnswerRepo.GetAnswersToQuestionsAsync(Id);
+        currentSubcategory = await uow.SubcategoryRepo.GetByIdAsync(Question.SubCategoryId);
+        Subcategories = await uow.SubcategoryRepo.GetAllAsync();
 
+        firstAnswer = Answers[0];
+        secondAnswer = Answers[1];
+        thirdAnswer = Answers[2];
+
+    }
+
+    private async Task EditQuestion()
+    {
+        int trueAnswerCount = 0;
+        if (isAnswer1Correct == "True") trueAnswerCount++;
+        if (isAnswer2Correct == "True") trueAnswerCount++;
+        if (isAnswer3Correct == "True") trueAnswerCount++;
+
+        QuestionModel updatedQuestion = new(){
+        ExplanationText = newExplanationText,
+        Text = newQuestionText,
+        Title = newName,
+        SubCategoryId = newSubcategory
+        };
+
+        if(isAnswer1Correct == "" && isAnswer2Correct == "" && isAnswer3Correct == "")
+        {
+
+
+            await uow.QuestionRepo.UpdateAsync(Id, updatedQuestion);
+
+        } 
+        else
+        {
+            if (trueAnswerCount == 1)
+            {
+                // exactly one answer is correct, update answers to question
+
+                AnswerModel firstAnswerToUpdate = new()
+                {
+                    Text = newFirstAnswerText,
+                    IsCorrectAnswer = isAnswer1Correct == "True" ? true : false
+                };
+                AnswerModel secondAnswerToUpdate = new()
+                {
+                Text = newSecondAnswerText,
+                IsCorrectAnswer = isAnswer2Correct == "True" ? true : false,
+                };
+                AnswerModel thirdAnswerToUpdate = new()
+                {
+                    Text = newThirdAnswerText,
+                    IsCorrectAnswer = isAnswer3Correct == "True" ? true : false
+                };
+
+                if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to edit this question and its answers?"))
+                    return;
+
+                await uow.AnswerRepo.UpdateAsync(firstAnswer.Id, firstAnswerToUpdate);
+                await uow.AnswerRepo.UpdateAsync(secondAnswer.Id, secondAnswerToUpdate);
+                await uow.AnswerRepo.UpdateAsync(thirdAnswer.Id, thirdAnswerToUpdate);
+                await uow.QuestionRepo.UpdateAsync(Id, updatedQuestion);
+                navManager.NavigateTo("/Admin");
+            }
+
+            else
+                {
+                    if (trueAnswerCount > 1) ErrorMessageQuestion = "Only ONE answer can be correct";
+                    if (trueAnswerCount < 1) ErrorMessageQuestion = "One answer must be marked as correct";
+                    return;
+                    // more or less than one correct answer, warn the user
+                }
+            }
+
+      
     }
 }
