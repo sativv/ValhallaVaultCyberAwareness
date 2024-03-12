@@ -18,8 +18,8 @@
 }
 else
 {
-    <div class="container mt-5 align-content-start">
-        <div class="row justify-content-center">
+    <div class="row mt-3 justify-content-center">
+        
             <div class="col-md-6">
                 <div class="card" style="border:none;">
                     <div class="card-body bg-dark" style="border:1px solid #0d5959">
@@ -38,13 +38,14 @@ else
                         }
                         <div class="d-flex flex-column align-items-center">
                             <input type="text" class="inputBorder mb-2 w-75" placeholder="Category Name" @bind=categoryName required>
-                            <div></div>
+                            
                             <button class="btn buttonBorder btn-block w-75 mb-3" @onclick="AddCategory">Add Category</button>
                             <EditCategoryComponent Categories="Categories"></EditCategoryComponent>
                         </div>
                     </div>
                 </div>
             </div>
+       
         </div>
 
         <div class="row justify-content-center mt-3">
@@ -69,7 +70,7 @@ else
                             <input type="text" class="inputBorder mb-2 w-75" @bind=segmentName placeholder="Segment Name" required>
                             <textarea class="inputBorder mb-2 w-75" rows="3" placeholder="Segment Information" @bind=segmentInformation required></textarea>
                             <select @bind="segmentCategoryId" class="inputBorder mb-2 w-75" required>
-                                <option selected>Select Category</option>
+                                <option selected>Select Subcategory</option>
                                 @foreach (var category in Categories)
                                 {
                                     <option value="@category.Id" style="background-color:#292b2c">@category.Name</option>
@@ -82,6 +83,45 @@ else
                 </div>
             </div>
         </div>
+    <div class="row mt-3 justify-content-center">
+        <div class="col-md-6">
+            
+                <div class="card" style="border:none">
+                    <div class="card-body bg-dark" style="border:1px solid #0d5959">
+                        <h3 class="card-title text-center">Create a new Subcategory!</h3>
+
+                        @if (ErrorMessageSubcategory != "")
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @ErrorMessageSubcategory
+                            </div>
+                        }
+                        else if (SubcategorySuccessMessage != "")
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @SubcategorySuccessMessage
+                            </div>
+                        }
+                        <div class="d-flex flex-column align-items-center">
+                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Subcategory Title" @bind="subcategoryName" />
+                            <input type="text" class="inputBorder mb-2 w-75" placeholder="Image URL" @bind="subcategoryImage" />
+                            <textarea class="inputBorder mb-2 w-75" placeholder="Info Text" @bind="subcategoryInfotext" />
+                            <select @bind="subcategorySegmentId" class="inputBorder mb-2 w-75" required>
+                                <option selected>Select Segment</option>
+                                @foreach (var segment in Segments)
+                                {
+                                    <option value="@segment.Id" style="background-color:#292b2c">@segment.Name</option>
+                                }
+                            </select>
+                            <button class="btn buttonBorder btn-block w-75 mb-3" @onclick="AddSubcategory">Add Subcategory</button>
+                            <EditSubCategoryComponent SubCategories="Subcategories"></EditSubCategoryComponent>
+                        </div>
+                    </div>
+                </div>
+         
+        </div>
+    </div>
+
 
         <div class="row justify-content-center mt-3">
             <div class="col-md-6">
@@ -139,7 +179,6 @@ else
             </div>
         </div>
 
-    </div>
 }
 
 
@@ -147,6 +186,7 @@ else
     private List<CategoryModel> Categories { get; set; }
     private List<SegmentModel> Segments { get; set; }
     private List<QuestionModel> Questions { get; set; }
+    private List<SubCategoryModel> Subcategories { get; set; }
     private string segmentName;
     private string segmentInformation;
     private int? segmentCategoryId;
@@ -164,9 +204,12 @@ else
     private string ErrorMessageQuestion = "";
     private string ErrorMessageCategory = "";
     private string ErrorMessageSegment = "";
+    private string ErrorMessageSubcategory = "";
+
     private string QuestionSuccessMessage = "";
     private string SegmentSuccessMessage = "";
     private string CategorySuccessMessage = "";
+    private string SubcategorySuccessMessage = "";
 
     private string categoryName;
 
@@ -176,11 +219,18 @@ else
     private int? questionSegmentId;
 
 
+    private string subcategoryName;
+    private string subcategoryImage;
+    private string subcategoryInfotext;
+    private int subcategorySegmentId;
+
+
     protected override async Task OnInitializedAsync()
     {
         Segments = await uow.SegmentRepo.GetAllAsync();
         Categories = await uow.CategoryRepo.GetAllAsync();
         Questions = await uow.QuestionRepo.GetAllAsync();
+        Subcategories = await uow.SubcategoryRepo.GetAllAsync();
     }
     private void NavToPage()
     {
@@ -227,7 +277,6 @@ else
                 };
 
             await uow.CategoryRepo.AddAsync(categoryToAdd);
-            await uow.CategoryRepo.SaveChangesAsync();
             Categories.Add(categoryToAdd);
             StateHasChanged();
             categoryName = "";
@@ -240,6 +289,30 @@ else
             ErrorMessageCategory = "You are required to all fields in order to add a new category!";
         }
 
+    }
+
+    private async Task AddSubcategory()
+    {
+        if(subcategoryName != null)
+        {
+            SubCategoryModel subcategoryToAdd = new()
+                {
+                    Title = subcategoryName,
+                    SegmentId = subcategorySegmentId,
+                    InfoText = subcategoryInfotext,
+                    Image = subcategoryImage,
+
+                };
+
+                await uow.SubcategoryRepo.AddAsync(subcategoryToAdd);
+                Subcategories.Add(subcategoryToAdd);
+                StateHasChanged();
+                subcategoryName = "";
+                subcategoryImage = "";
+                subcategoryInfotext = "";
+                subcategorySegmentId = 0;
+                
+        }
     }
 
     private async Task AddQuestion()
