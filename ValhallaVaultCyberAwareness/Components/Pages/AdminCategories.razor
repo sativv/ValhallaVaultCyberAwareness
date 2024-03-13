@@ -49,6 +49,7 @@ else
                 return;
 
           await uow.CategoryRepo.EditCategoryAsync(newCategoryName, Id);
+            await JSRuntime.InvokeVoidAsync("alert", "Category was successfully updated!");
           navManager.NavigateTo("/admin");
         }
 }

@@ -12,6 +12,7 @@
 @inject IdentityUserAccessor UserAccessor
 @inject NavigationManager NavigationManager
 
+
 <PageTitle>Manage email</PageTitle>
 
 <h3>Manage email</h3>
@@ -75,11 +76,13 @@
 
     private async Task OnValidSubmitAsync()
     {
+
         if (Input.NewEmail is null || Input.NewEmail == email)
         {
             message = "Your email is unchanged.";
             return;
         }
+       
 
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);

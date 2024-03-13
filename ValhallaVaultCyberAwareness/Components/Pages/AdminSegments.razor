@@ -77,6 +77,7 @@
                 };
 
             await uow.SegmentRepo.UpdateAsync(Segment.Id, updatedSegment);
+            await JSRuntime.InvokeVoidAsync("alert", "Segment was successfully updated!");
             navManager.NavigateTo("/admin");
         }
 

@@ -12,25 +12,21 @@
 {
     <h1>Loading...</h1>
 }
-else
-{
+else{
+
+  
 
 <div class="d-flex mt-5 justify-content-center" style="height:100vh;">
     <div class="card bg-dark w-50 align-items-center text-center ">
         <h3 class="mb-5">Currently Editing Subcategory: @Question.Title</h3>
             <p class="w-75">Old Name: @Question.Title</p>
-            @if(ErrorMessageQuestion != "")
-            {
-               <div class="alert alert-danger" role="alert">
-                   @ErrorMessageQuestion
-                   </div>
-            }
+         
             <input type="text" placeholder="New Name" class="inputBorder w-75" @bind="newName" />
             <OldVersionComponent Title="Old Explanation Text" Text="@Question.ExplanationText"></OldVersionComponent>
            
             <textarea placeholder="New Explanation Text" class="inputBorder w-75" @bind="newExplanationText"></textarea>
-            <p>Old Question Text:</p>
-            <p>@Question.Text</p>
+            <OldVersionComponent Title="Old Question Text:" Text="@Question.Text"></OldVersionComponent>
+       
             <textarea placeholder="New Question Text" class="inputBorder w-75" @bind="newQuestionText"></textarea>
 
            
@@ -64,6 +60,12 @@ else
 
 
             </select>
+            @if (ErrorMessageQuestion != "")
+            {
+                <div class="alert alert-danger mt-3" role="alert">
+                    @ErrorMessageQuestion
+                </div>
+            }
             <label class="mt-2">Change Subcategory</label>
             <select @bind="newSubcategory" class="inputBorder w-75 mt-3">
                 <option selected value="@currentSubcategory.Id"> current subcategory: @currentSubcategory.Title</option>
@@ -73,6 +75,7 @@ else
                 }
             </select>
             <button class="btn buttonBorder btn-block w-75 mt-3" @onclick="EditQuestion">Edit Question!</button>
+          
         </div>
     </div>
 }
@@ -131,16 +134,28 @@ else
 
     private async Task EditQuestion()
     {
-        if (string.IsNullOrEmpty(isAnswer1Correct) && string.IsNullOrEmpty(isAnswer2Correct) && string.IsNullOrEmpty(isAnswer3Correct) && string.IsNullOrEmpty(newFirstAnswerText) && string.IsNullOrEmpty(newSecondAnswerText) && string.IsNullOrEmpty(newThirdAnswerText) && string.IsNullOrEmpty(newExplanationText) && string.IsNullOrEmpty(newQuestionText) && string.IsNullOrEmpty(newName) && newSubcategory == null)
+        if (string.IsNullOrEmpty(isAnswer1Correct) && string.IsNullOrEmpty(isAnswer2Correct) && string.IsNullOrEmpty(isAnswer3Correct) && string.IsNullOrEmpty(newFirstAnswerText) && string.IsNullOrEmpty(newSecondAnswerText) && string.IsNullOrEmpty(newThirdAnswerText) && string.IsNullOrEmpty(newExplanationText) && string.IsNullOrEmpty(newQuestionText) && string.IsNullOrEmpty(newName) && newSubcategory == 0)
         {
             ErrorMessageQuestion = "No changes detected";
             StateHasChanged();
             return;
         }
         int trueAnswerCount = 0;
-        if (isAnswer1Correct == "True") trueAnswerCount++;
-        if (isAnswer2Correct == "True") trueAnswerCount++;
-        if (isAnswer3Correct == "True") trueAnswerCount++;
+        int falseAnswerCount = 0;
+        if (isAnswer1Correct == "True")
+            trueAnswerCount++;
+        else if (isAnswer1Correct == "False")
+            falseAnswerCount++;
+
+        if (isAnswer2Correct == "True")
+            trueAnswerCount++;
+        else if (isAnswer2Correct == "False")
+            falseAnswerCount++;
+
+        if (isAnswer3Correct == "True")
+            trueAnswerCount++;
+        else if (isAnswer3Correct == "False")
+            falseAnswerCount++;
 
         QuestionModel updatedQuestion = new(){
         ExplanationText = newExplanationText,
@@ -154,37 +169,51 @@ else
 
 
             await uow.QuestionRepo.UpdateAsync(Id, updatedQuestion);
-
+            await JSRuntime.InvokeVoidAsync("alert", "Question was successfully updated!");
+            navManager.NavigateTo("/Admin");
         } 
         else
         {
-            if (trueAnswerCount == 1)
+            if (trueAnswerCount == 1 && falseAnswerCount == 2)
             {
                 // exactly one answer is correct, update answers to question
+                if(newFirstAnswerText != null && isAnswer1Correct != "")
+                {
 
-                AnswerModel firstAnswerToUpdate = new()
+                    AnswerModel firstAnswerToUpdate = new()
+                    {
+                        Text = newFirstAnswerText,
+                        IsCorrectAnswer = isAnswer1Correct == "True" ? true : false
+                    };
+                    await uow.AnswerRepo.UpdateAsync(firstAnswer.Id, firstAnswerToUpdate);
+                }
+                if (newSecondAnswerText != null && isAnswer2Correct != "")
                 {
-                    Text = newFirstAnswerText,
-                    IsCorrectAnswer = isAnswer1Correct == "True" ? true : false
-                };
-                AnswerModel secondAnswerToUpdate = new()
+                    AnswerModel secondAnswerToUpdate = new()
+                        {
+                            Text = newSecondAnswerText,
+                            IsCorrectAnswer = isAnswer2Correct == "True" ? true : false,
+                        };
+                    await uow.AnswerRepo.UpdateAsync(secondAnswer.Id, secondAnswerToUpdate);
+                }
+                if (newThirdAnswerText != null && isAnswer3Correct != "")
                 {
-                Text = newSecondAnswerText,
-                IsCorrectAnswer = isAnswer2Correct == "True" ? true : false,
-                };
-                AnswerModel thirdAnswerToUpdate = new()
-                {
-                    Text = newThirdAnswerText,
-                    IsCorrectAnswer = isAnswer3Correct == "True" ? true : false
-                };
+                    AnswerModel thirdAnswerToUpdate = new()
+                        {
+                            Text = newThirdAnswerText,
+                            IsCorrectAnswer = isAnswer3Correct == "True" ? true : false
+                        };
+                    await uow.AnswerRepo.UpdateAsync(thirdAnswer.Id, thirdAnswerToUpdate);
+                }
+
 
                 if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to edit this question and its answers?"))
                     return;
 
-                await uow.AnswerRepo.UpdateAsync(firstAnswer.Id, firstAnswerToUpdate);
-                await uow.AnswerRepo.UpdateAsync(secondAnswer.Id, secondAnswerToUpdate);
-                await uow.AnswerRepo.UpdateAsync(thirdAnswer.Id, thirdAnswerToUpdate);
+               
+         
                 await uow.QuestionRepo.UpdateAsync(Id, updatedQuestion);
+                await JSRuntime.InvokeVoidAsync("alert", "Question was successfully updated!");
                 navManager.NavigateTo("/Admin");
             }
 
@@ -192,6 +221,8 @@ else
                 {
                     if (trueAnswerCount > 1) ErrorMessageQuestion = "Only ONE answer can be correct";
                     if (trueAnswerCount < 1) ErrorMessageQuestion = "One answer must be marked as correct";
+                    if (falseAnswerCount < 2) ErrorMessageQuestion = "One answer must be marked correct, and 2 incorrect";
+                    StateHasChanged();
                     return;
                     // more or less than one correct answer, warn the user
                 }
