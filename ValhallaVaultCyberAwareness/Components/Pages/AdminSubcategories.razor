@@ -79,6 +79,7 @@
                 };
 
             await uow.SubcategoryRepo.UpdateAsync(Id, subcategoryToUpdate); 
+            await JSRuntime.InvokeVoidAsync("alert", "Subcategory was successfully updated!");
             navManager.NavigateTo("/admin");
             
         }
