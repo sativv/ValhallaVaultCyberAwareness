@@ -16,23 +16,27 @@ else{
 
   
 
-<div class="d-flex mt-5 justify-content-center" style="height:100vh;">
+<div class="d-flex mt-5 justify-content-center" style="min-height:100vh;">
     <div class="card bg-dark w-50 align-items-center text-center ">
         <h3 class="mb-5">Currently Editing Subcategory: @Question.Title</h3>
             <p class="w-75">Old Name: @Question.Title</p>
-         
+            
             <input type="text" placeholder="New Name" class="inputBorder w-75" @bind="newName" />
-            <OldVersionComponent Title="Old Explanation Text" Text="@Question.ExplanationText"></OldVersionComponent>
-           
-            <textarea placeholder="New Explanation Text" class="inputBorder w-75" @bind="newExplanationText"></textarea>
-            <OldVersionComponent Title="Old Question Text:" Text="@Question.Text"></OldVersionComponent>
+            <div class="w-100">
+                <OldVersionComponent Title="Old Explanation Text" Text="@Question.ExplanationText"></OldVersionComponent>
+                <textarea placeholder="New Explanation Text" class="inputBorder w-75"  @bind="newExplanationText"></textarea>
+            </div>
+            <div class="w-100">
+                <OldVersionComponent Title="Old Question Text:" Text="@Question.Text"></OldVersionComponent>
+
+                <textarea placeholder="New Question Text" class="inputBorder w-75" @bind="newQuestionText"></textarea>
+            </div>
        
-            <textarea placeholder="New Question Text" class="inputBorder w-75" @bind="newQuestionText"></textarea>
 
            
           
                 
-                <p class="mt-1 w-75">Old Answer: @firstAnswer.Text | <span class="@(firstAnswer.IsCorrectAnswer ? "text-success" : "text-danger" )">@(firstAnswer.IsCorrectAnswer ? "Correct" : "Incorrect")</span></p>
+                <p class=" w-75">Old Answer: @firstAnswer.Text | <span class="@(firstAnswer.IsCorrectAnswer ? "text-success" : "text-danger" )">@(firstAnswer.IsCorrectAnswer ? "Correct" : "Incorrect")</span></p>
                 <input type="text" placeholder="New Answer" class="inputBorder w-75" @bind="newFirstAnswerText"/>
                 <select class="inputBorder w-75" @bind="@isAnswer1Correct">
                 <option value="" selected="selected">Correct/Incorrect</option>
