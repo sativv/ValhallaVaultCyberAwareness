@@ -1,0 +1,70 @@
+﻿@page "/FAQ"
+@rendermode InteractiveServer
+<h1>FAQ</h1>
+
+@if(faqList != null)
+{
+    @foreach (var faq in faqList)
+    {
+        <button class="btn btn-lg buttonBorder d-flex flex-column align-items-center mt-4" @onclick="(e) => ShowAnswer(e, faq)">@faq.Question</button>
+
+        @if(faq.IsShown)
+        {
+            <p>@faq.Answer</p>
+        }
+    }
+}
+
+
+@code {
+    private List<FaqModel>? faqList;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        faqList = new();
+
+        faqList.Add(new FaqModel()
+        {
+            Question = "What is cybersecurity?",
+                Answer = "Cybersecurity is the practice of protecting internet-connected systems, including hardware, software, and data, from attack, damage, or unauthorized access. It involves using a combination of technologies, processes, and controls to secure systems and prevent cyber threats."
+        });
+
+        faqList.Add(new FaqModel()
+        {
+            Question = "What are the best practices for creating a strong password?",
+                Answer = "Some best practices for creating strong passwords include using a combination of letters, numbers, and special characters, making the password at least 12 characters long, and avoiding using easily guessed information, such as your name or date of birth."
+        });
+        faqList.Add(new FaqModel()
+        {
+            Question = "Where is your company based?",
+            Answer = "Our company is based in Sweden"
+        });
+        faqList.Add(new FaqModel()
+        {
+                Question = "What is the GDPR (General Data Protection Regulation)?",
+                Answer = " The General Data Protection Regulation (GDPR) is a regulation adopted by the European Union (EU) in April 2016 that replaces the EU Data Protection Directive. It strengthens EU data protection rules and gives EU citizens more control over their personal data."
+        });
+        faqList.Add(new FaqModel()
+        {
+                Question = "How can I secure my mobile device?",
+                Answer = " Steps you can take to secure your mobile device include using a password or pin to lock your device, installing reputable mobile security software, and only downloading apps from official app stores."
+        });
+
+    }
+
+    private void ShowAnswer(MouseEventArgs e, FaqModel faq)
+    {
+        faq.IsShown = !faq.IsShown;
+
+        StateHasChanged();
+    }
+
+    private sealed class FaqModel 
+    {
+        public string? Question { get; set; }
+        public string? Answer { get; set; }
+        public bool IsShown { get; set; } = false;
+    }
+}
