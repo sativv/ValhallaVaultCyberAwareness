@@ -45,9 +45,16 @@ namespace ValhallaVaultCyberAwareness.Repository
             AnswerModel answerToUpdate = await context.Answers.FirstOrDefaultAsync(a => a.Id == id);
             if (answerToUpdate != null)
             {
-                answerToUpdate.Text = newAnswer.Text;
-                answerToUpdate.Question = newAnswer.Question;
-                answerToUpdate.IsCorrectAnswer = newAnswer.IsCorrectAnswer;
+                if (newAnswer.Text != null)
+                {
+                    answerToUpdate.Text = newAnswer.Text;
+
+                }
+                if (newAnswer.IsCorrectAnswer != null)
+                {
+
+                    answerToUpdate.IsCorrectAnswer = newAnswer.IsCorrectAnswer;
+                }
             }
             await SaveChangesAsync();
 
