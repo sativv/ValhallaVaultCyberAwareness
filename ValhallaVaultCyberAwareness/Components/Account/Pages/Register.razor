@@ -14,6 +14,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@rendermode InteractiveServer
 
 <PageTitle>Register</PageTitle>
 
@@ -22,7 +23,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <StatusMessage Message="@Message" />
+            @* <StatusMessage Message="@Message" /> *@
             <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
                 <DataAnnotationsValidator />
                 <h2>Create a new account.</h2>
@@ -48,7 +49,20 @@
                     <label for="confirm-password">Confirm Password</label>
                     <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
                 </div>
-                <button type="submit" class="w-100 btn buttonBorder btn-lg">Register</button>
+                <div class=" mb-3">
+                    <label >
+                        I accept <a href="">terms and conditions</a>
+                    <InputCheckbox @bind-Value="acceptTermsAndCondition" class="text-white d-inline" @onclick="EnableButton"/>
+                    </label
+                </div>
+                @if(btnEnabled)
+                {
+                    <button type="submit" class="w-100 btn buttonBorder btn-lg">Register</button>
+                }
+                else
+                {
+                    <button type="submit" class="w-100 btn buttonBorder btn-lg disabled">Register</button>
+                }
             </EditForm>
         </div>
     </div>
@@ -64,7 +78,15 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    private bool acceptTermsAndCondition;
+    private bool btnEnabled = false;
+
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+
+    private void EnableButton()
+    {
+        btnEnabled = !acceptTermsAndCondition;
+    }
 
     public async Task RegisterUser(EditContext editContext)
     {
