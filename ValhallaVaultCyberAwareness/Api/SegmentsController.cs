@@ -24,7 +24,19 @@ namespace ValhallaVaultCyberAwareness.Api
         [HttpGet("{id}")]
         public async Task<ActionResult<SegmentModel>> Get(int id)
         {
-            return Ok(await uow.SegmentRepo.GetByIdAsync(id));
+            SegmentModel? segment = await uow.SegmentRepo.GetByIdAsync(id);
+
+            if (segment == null) return BadRequest();
+
+            SegmentModel projSegment = new()
+            {
+                Id = segment.Id,
+                Name = segment.Name,
+                InfoText = segment.InfoText,
+                CategoryId = segment.CategoryId,
+            };
+
+            return Ok(projSegment);
         }
 
         // POST api/<SegmentsController>
