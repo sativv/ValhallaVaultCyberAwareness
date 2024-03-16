@@ -16,6 +16,7 @@ namespace ValhallaVaultCyberAwareness.Repository
             SegmentRepo = new(context);
             ResponseRepo = new(context);
             UserRepo = new(context);
+            LogRepo = new(context);
         }
 
         public AnswerRepo AnswerRepo { get; set; }
@@ -25,6 +26,8 @@ namespace ValhallaVaultCyberAwareness.Repository
         public SegmentRepo SegmentRepo { get; set; }
         public ResponseRepo ResponseRepo { get; set; }
         public UserRepo UserRepo { get; set; }
+
+        public LogRepo LogRepo { get; set; }
 
     }
 }

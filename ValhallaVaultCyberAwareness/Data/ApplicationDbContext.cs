@@ -11,6 +11,8 @@ namespace ValhallaVaultCyberAwareness.Data
         public DbSet<QuestionModel> Questions { get; set; }
         public DbSet<ResponseModel> Responses { get; set; }
         public DbSet<SegmentModel> Segments { get; set; }
+
+        public DbSet<LoggerModel> Logs { get; set; }
         public DbSet<SubCategoryModel> SubCategories { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
